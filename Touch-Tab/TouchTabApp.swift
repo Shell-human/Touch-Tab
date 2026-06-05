@@ -138,7 +138,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateStatusIcon() {
         guard let item = statusBarItem else { return }
         let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
-        item.button?.image = NSImage(named: iconName)
+        let image = NSImage(named: iconName)
+        if image == nil {
+            print("WARNING: Status bar icon image '\(iconName)' is nil!")
+        }
+        item.button?.image = image
         rebuildMenu()
     }
     
