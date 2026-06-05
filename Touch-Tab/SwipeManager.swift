@@ -1,9 +1,13 @@
 import Cocoa
+import Combine
 
 class SwipeManager {
-    private static let accVelXThreshold: Float = 0.035
-    // TODO: figure out the real value of the delay.
-    private static let appSwitcherUIDelay: Double = 0.125
+    private static var accVelXThreshold: Float {
+        return Settings.shared.accVelXThreshold
+    }
+    private static var appSwitcherUIDelay: Double {
+        return Settings.shared.appSwitcherUIDelay
+    }
 
     private static var eventTap: CFMachPort? = nil
     // Event state.
@@ -180,5 +184,30 @@ class SwipeManager {
             case left
             case right
         }
+    }
+}
+
+class Settings: ObservableObject {
+    static let shared = Settings()
+
+    @Published var accVelXThreshold: Float {
+        didSet {
+            UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold")
+        }
+    }
+
+    @Published var appSwitcherUIDelay: Double {
+        didSet {
+            UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay")
+        }
+    }
+
+    private init() {
+        UserDefaults.standard.register(defaults: [
+            "accVelXThreshold": Float(0.035),
+            "appSwitcherUIDelay": Double(0.125)
+        ])
+        self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
+        self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
     }
 }

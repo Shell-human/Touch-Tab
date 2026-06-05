@@ -58,7 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         statusBarItem.menu = NSMenu()
         statusBarItem.menu?.addItem(
-            withTitle: "About \(BundleInfo.displayName())",
+            withTitle: "Preferences...",
             action: #selector(AppDelegate.showAbout),
             keyEquivalent: "")
         statusBarItem.menu?.addItem(
