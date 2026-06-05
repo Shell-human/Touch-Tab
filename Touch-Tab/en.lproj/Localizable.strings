@@ -1,0 +1,26 @@
+/* English localization for Touch-Tab */
+
+"Accessibility Access Required" = "Accessibility Access Required";
+"Please authorize Touch-Tab in System Settings to enable trackpad gesture switching." = "Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.";
+"Open System Settings" = "Open System Settings";
+"Preferences" = "Preferences";
+"Launch at Login" = "Launch at Login";
+"Show Icon in Menu Bar" = "Show Icon in Menu Bar";
+"Swipe Sensitivity" = "Swipe Sensitivity";
+"Faster (0.01)" = "Faster (0.01)";
+"Slower (0.08)" = "Slower (0.08)";
+"Switching Delay" = "Switching Delay";
+"Instant (0ms)" = "Instant (0ms)";
+"Slower (300ms)" = "Slower (300ms)";
+"Velocity Multiplier" = "Velocity Multiplier";
+"Normal (1.0x)" = "Normal (1.0x)";
+"Maximum (10.0x)" = "Maximum (10.0x)";
+"Reset to Defaults" = "Reset to Defaults";
+"Quit" = "Quit";
+
+/* Menu bar and Alert */
+"No Accessibility Access - Authorize..." = "No Accessibility Access - Authorize...";
+"Preferences..." = "Preferences...";
+"Accessibility Permission Required" = "Accessibility Permission Required";
+"Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings." = "Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings.";
+"Cancel" = "Cancel";

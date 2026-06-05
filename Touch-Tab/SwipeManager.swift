@@ -55,6 +55,7 @@ enum SwipeManager {
         )
         guard let eventTap else {
             debugPrint("SwipeManager couldn't create event tap")
+            showAccessibilityAlert()
             return
         }
         
@@ -62,6 +63,25 @@ enum SwipeManager {
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
     }
+    
+    private static func showAccessibilityAlert() {
+        DispatchQueue.main.async {
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("Accessibility Permission Required", comment: "")
+            alert.informativeText = NSLocalizedString("Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings.", comment: "")
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: NSLocalizedString("Open System Settings", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+            
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+        }
+    }
+
     
     private static func eventHandler(_ eventType: CGEventType, cgEvent: CGEvent) -> Unmanaged<CGEvent>? {
         var swallow = false

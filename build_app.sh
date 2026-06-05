@@ -27,7 +27,15 @@ cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_16x16.pn
 cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_32x32.png build/Touch-Tab.app/Contents/Resources/MenuItem-Warning@2x.png
 cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_48x48.png build/Touch-Tab.app/Contents/Resources/MenuItem-Warning@3x.png
 
+echo "Copying localization resources..."
+mkdir -p build/Touch-Tab.app/Contents/Resources/en.lproj
+cp Touch-Tab/en.lproj/Localizable.strings build/Touch-Tab.app/Contents/Resources/en.lproj/
+
+mkdir -p build/Touch-Tab.app/Contents/Resources/zh-Hans.lproj
+cp Touch-Tab/zh-Hans.lproj/Localizable.strings build/Touch-Tab.app/Contents/Resources/zh-Hans.lproj/
+
 # 4. Generate AppIcon.icns
+
 echo "Generating AppIcon.icns..."
 mkdir -p build/AppIcon.iconset
 cp Touch-Tab/Assets.xcassets/AppIcon.appiconset/AppIcon_16x16.png build/AppIcon.iconset/icon_16x16.png

@@ -144,22 +144,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.removeAllItems()
         
         if !AppState.shared.isTrusted {
-            let warningItem = NSMenuItem(title: "No Accessibility Access - Authorize...", action: #selector(openPrivacyAccessibility), keyEquivalent: "")
+            let warningItem = NSMenuItem(
+                title: NSLocalizedString("No Accessibility Access - Authorize...", comment: ""),
+                action: #selector(openPrivacyAccessibility),
+                keyEquivalent: ""
+            )
             warningItem.target = self
             menu.addItem(warningItem)
             menu.addItem(NSMenuItem.separator())
         }
         
-        let prefsItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences), keyEquivalent: "")
+        let prefsItem = NSMenuItem(
+            title: NSLocalizedString("Preferences...", comment: ""),
+            action: #selector(openPreferences),
+            keyEquivalent: ""
+        )
         prefsItem.target = self
         menu.addItem(prefsItem)
         
         menu.addItem(NSMenuItem.separator())
         
-        let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "")
+        let quitItem = NSMenuItem(
+            title: NSLocalizedString("Quit", comment: ""),
+            action: #selector(quitApp),
+            keyEquivalent: ""
+        )
         quitItem.target = self
         menu.addItem(quitItem)
     }
+
     
     @objc private func openPrivacyAccessibility() {
         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!

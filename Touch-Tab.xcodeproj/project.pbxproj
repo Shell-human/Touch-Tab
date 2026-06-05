@@ -7,27 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		588922D429BB490400F7F843 /* AppSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588922D329BB490400F7F843 /* AppSwitcher.swift */; };
 		58BC5B2C28B3C4C30013EAD3 /* SwipeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BC5B2828B3C4C30013EAD3 /* SwipeManager.swift */; };
 		58BC5B2D28B3C4C30013EAD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58BC5B2928B3C4C30013EAD3 /* Assets.xcassets */; };
-		58BC5B2E28B3C4C30013EAD3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BC5B2A28B3C4C30013EAD3 /* AppDelegate.swift */; };
-		58BC5B2F28B3C4C30013EAD3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BC5B2B28B3C4C30013EAD3 /* main.swift */; };
-		58D3F9F42A8E14C80021A532 /* PrivacyHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D3F9F32A8E14C80021A532 /* PrivacyHelper.swift */; };
 		58DE49CA29D09BB70025BE44 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE49C929D09BB70025BE44 /* AboutView.swift */; };
-		58FBBBE529D20D3600A15F66 /* BundleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FBBBE429D20D3600A15F66 /* BundleInfo.swift */; };
+		58DE49CC29D09BB70025BE44 /* TouchTabApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE49CB29D09BB70025BE44 /* TouchTabApp.swift */; };
+		58DE49CD29D09BB70025BE44 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58DE49CE29D09BB70025BE44 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		588922D329BB490400F7F843 /* AppSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSwitcher.swift; sourceTree = "<group>"; };
 		58BC5B1528B3C37B0013EAD3 /* Touch-Tab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Touch-Tab.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		58BC5B2828B3C4C30013EAD3 /* SwipeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeManager.swift; sourceTree = "<group>"; };
 		58BC5B2928B3C4C30013EAD3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		58BC5B2A28B3C4C30013EAD3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		58BC5B2B28B3C4C30013EAD3 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		58D3F9F32A8E14C80021A532 /* PrivacyHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyHelper.swift; sourceTree = "<group>"; };
 		58D3F9F52A8E15E50021A532 /* Touch-Tab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Touch-Tab.entitlements"; sourceTree = "<group>"; };
 		58DE49C929D09BB70025BE44 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
-		58FBBBE429D20D3600A15F66 /* BundleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleInfo.swift; sourceTree = "<group>"; };
+		58DE49CB29D09BB70025BE44 /* TouchTabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchTabApp.swift; sourceTree = "<group>"; };
+		58DE49CF29D09BB70025BE44 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		58DE49D029D09BB70025BE44 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -51,14 +46,11 @@
 			isa = PBXGroup;
 			children = (
 				58D3F9F52A8E15E50021A532 /* Touch-Tab.entitlements */,
-				58FBBBE429D20D3600A15F66 /* BundleInfo.swift */,
-				58BC5B2A28B3C4C30013EAD3 /* AppDelegate.swift */,
 				58BC5B2928B3C4C30013EAD3 /* Assets.xcassets */,
-				58BC5B2B28B3C4C30013EAD3 /* main.swift */,
 				58BC5B2828B3C4C30013EAD3 /* SwipeManager.swift */,
-				588922D329BB490400F7F843 /* AppSwitcher.swift */,
 				58DE49C929D09BB70025BE44 /* AboutView.swift */,
-				58D3F9F32A8E14C80021A532 /* PrivacyHelper.swift */,
+				58DE49CB29D09BB70025BE44 /* TouchTabApp.swift */,
+				58DE49CE29D09BB70025BE44 /* Localizable.strings */,
 			);
 			path = "Touch-Tab";
 			sourceTree = "<group>";
@@ -105,6 +97,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 58BC5B0C28B3C37B0013EAD3;
 			productRefGroup = 58BC5B1628B3C37B0013EAD3 /* Products */;
@@ -122,6 +115,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				58BC5B2D28B3C4C30013EAD3 /* Assets.xcassets in Resources */,
+				58DE49CD29D09BB70025BE44 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,17 +126,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58BC5B2E28B3C4C30013EAD3 /* AppDelegate.swift in Sources */,
 				58BC5B2C28B3C4C30013EAD3 /* SwipeManager.swift in Sources */,
-				588922D429BB490400F7F843 /* AppSwitcher.swift in Sources */,
-				58FBBBE529D20D3600A15F66 /* BundleInfo.swift in Sources */,
-				58BC5B2F28B3C4C30013EAD3 /* main.swift in Sources */,
 				58DE49CA29D09BB70025BE44 /* AboutView.swift in Sources */,
-				58D3F9F42A8E14C80021A532 /* PrivacyHelper.swift in Sources */,
+				58DE49CC29D09BB70025BE44 /* TouchTabApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		58DE49CE29D09BB70025BE44 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				58DE49CF29D09BB70025BE44 /* en */,
+				58DE49D029D09BB70025BE44 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		58BC5B2228B3C37E0013EAD3 /* Debug */ = {
