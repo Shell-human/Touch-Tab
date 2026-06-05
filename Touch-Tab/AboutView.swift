@@ -174,7 +174,7 @@ struct AboutView: View {
             }
             .padding(20)
         }
-        .frame(width: 320, height: appState.isTrusted ? 470 : 560)
+        .frame(width: 320, height: appState.isTrusted ? 470 : 590)
     }
 }
 
