@@ -194,6 +194,10 @@ struct TouchTabApp: App {
 }
 
 extension Bundle {
-    var displayName: String { object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "" }
+    var displayName: String {
+        object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+            ?? object(forInfoDictionaryKey: "CFBundleName") as? String
+            ?? "Touch-Tab"
+    }
     var version: String { object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "" }
 }

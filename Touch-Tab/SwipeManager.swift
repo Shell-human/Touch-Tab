@@ -121,7 +121,7 @@ enum SwipeManager {
 
         let speed = Double(abs(velX))
         let accelFactor = Settings.shared.gestureAcceleration
-        let dynamicMultiplier = 1.0 + (speed * 100.0 * accelFactor)
+        let dynamicMultiplier = 1.0 + (speed * DefaultSettings.accelSpeedScale * accelFactor)
         accVelX += Double(velX) * dynamicMultiplier
         if abs(accVelX) < accVelXThreshold {
             return true
@@ -129,9 +129,9 @@ enum SwipeManager {
 
         if startTime == nil {
             startTime = Date()
-        } else {
-            let interval = startTime!.timeIntervalSinceNow
-            if -interval < appSwitcherUIDelay {
+        } else if let t = startTime {
+            let interval = -t.timeIntervalSinceNow
+            if interval < appSwitcherUIDelay {
                 clearEventState()
                 return true
             }
@@ -143,11 +143,10 @@ enum SwipeManager {
     }
 
     private static func processOtherFingers() {
-        if startTime != nil {
-            endGesture()
-            clearEventState()
-            startTime = nil
-        }
+        guard startTime != nil else { return }
+        endGesture()
+        clearEventState()
+        startTime = nil
     }
 
     private static func clearEventState() {
@@ -210,6 +209,8 @@ enum DefaultSettings {
     static let appSwitcherUIDelay: Double = 0.150
     static let gestureAcceleration: Double = 1.0
     static let showMenuBarIcon = true
+    /// Scales normalized touch velocity (~0.001–0.01/frame) into a perceivable acceleration range.
+    static let accelSpeedScale: Double = 100.0
 }
 
 @Observable
