@@ -1,9 +1,9 @@
 import Cocoa
 
 class SwipeManager {
-    private static let accVelXThreshold: Float = 0.04
+    private static let accVelXThreshold: Float = 0.0325
     // TODO: figure out the real value of the delay.
-    private static let appSwitcherUIDelay: Double = 0.15
+    private static let appSwitcherUIDelay: Double = 0.125
 
     private static var eventTap: CFMachPort? = nil
     // Event state.
