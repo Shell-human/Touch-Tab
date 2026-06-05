@@ -30,6 +30,7 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 2. **快速安装**：双击打开 `.dmg` 镜像，将 **Touch-Tab** 拖入 **Applications**（应用程序）文件夹中运行。
 3. **系统权限配置**：
    * **辅助功能 (Accessibility)**：打开 `系统设置 > 隐私与安全性 > 辅助功能`，勾选允许 **Touch-Tab** 控制电脑。
+   * **⚠️ 三指拖移 (Three Finger Drag)**：如果您在 `系统设置 > 辅助功能 > 指针控制 > 触控板选项` 中启用了“使用触控板进行拖移”并选择为**“三指拖移”**，请**务必将其关闭**（或改为其他非三指拖移方式）。否则，您的三指滑动会被系统优先识别为拖拽窗口或选择文本，与本软件的三指手势产生严重冲突。
 
 ### 💡 使用贴士
 > [!TIP]
@@ -68,6 +69,7 @@ chmod +x build_app.sh
 2. **Install**: Double-click the `.dmg` file and drag **Touch-Tab** into your **Applications** folder.
 3. **System Configuration**:
    * **Accessibility**: Open `System Settings > Privacy & Security > Accessibility` and authorize **Touch-Tab**.
+   * **⚠️ Three Finger Drag**: If you have enabled "Use trackpad for dragging" with **"Three Finger Drag"** under `System Settings > Accessibility > Pointer Control > Trackpad Options`, you **must disable it** (or change it to another style). Otherwise, your three-finger swipes will be captured by the system for window dragging or text selection, conflicting directly with Touch-Tab.
 
 ### 💡 Useful Tips
 > [!TIP]
