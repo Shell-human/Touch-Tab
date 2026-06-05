@@ -5,7 +5,7 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 在 macOS 上用触控板三指轻扫快速切换应用程序。基于原版的打磨增强版。
 
 <p align="center">
-  <img src="Preferences_v12.png" width="320" alt="Touch-Tab Preferences View">
+  <img src="Preferences_v13.png" width="320" alt="Touch-Tab Preferences View">
 </p>
 
 ---
@@ -14,7 +14,7 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 
 ### 🌟 核心功能
 * **三指轻扫切换**：用三指水平左右轻扫快速切换应用，慢滑或按住可呼出 App 切换器窗口（App Switcher）。
-* **自定义设置**：在首选项中自由调节滑动灵敏度、触发延迟与速度乘数，调配出最适合您的丝滑手势。
+* **自定义设置**：在首选项中自由调节滑动灵敏度、触发延迟与手势加速度，调配出最适合您的丝滑手势。
 * **背景滚动拦截**：吞除轻扫时的滚动事件，彻底解决原版中切换应用时导致的后台窗口页面跟着滚动的烦人 Bug。
 * **状态栏图标隐藏**：支持在首选项中隐藏菜单栏图标，隐藏后程序在后台静默且常驻运行。
 * **开机自启动**：在首选项中一键开启/关闭开机自启。
@@ -53,7 +53,7 @@ chmod +x build_app.sh
 
 ### 🌟 Key Features
 * **3-Finger Swipe**: Swipe left/right with 3 fingers to switch apps; hold or swipe slowly to show the macOS App Switcher UI.
-* **Custom Settings**: Adjust swipe sensitivity, trigger delay, and velocity multiplier in Preferences to achieve a smooth and personalized gesture experience.
+* **Custom Settings**: Adjust swipe sensitivity, trigger delay, and gesture acceleration in Preferences to achieve a smooth and personalized gesture experience.
 * **Background Scroll Guard**: Swallows horizontal 3-finger swipe events, fixing the bug in the original app where background window content scrolled during app switching.
 * **Hide Menu Bar Icon**: Toggle the status bar icon visibility in Preferences; if hidden, the application runs silently and persistently in the background.
 * **Launch at Login**: Easily enable or disable autostart directly from the Preferences window.

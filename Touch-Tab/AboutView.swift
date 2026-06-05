@@ -126,30 +126,30 @@ struct AboutView: View {
                     }
                 }
                 
-                // Velocity Multiplier Slider
+                // Gesture Acceleration Slider
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("Velocity Multiplier")
+                        Text("Gesture Acceleration")
                             .font(.system(size: 12))
                         Spacer()
-                        Text(String(format: "%.1fx", settings.velocityMultiplier))
+                        Text(String(format: "%.1fx", settings.gestureAcceleration))
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                     }
                     Slider(
                         value: Binding(
-                            get: { Double(settings.velocityMultiplier) },
-                            set: { settings.velocityMultiplier = Float($0) }
+                            get: { Double(settings.gestureAcceleration) },
+                            set: { settings.gestureAcceleration = Float($0) }
                         ),
-                        in: 0.1...10.0,
-                        step: 0.1
+                        in: 0.0...5.0,
+                        step: 0.5
                     )
                     HStack {
-                        Text("Minimum (0.1x)")
+                        Text("Linear (0.0x)")
                             .font(.system(size: 9))
                             .foregroundColor(.secondary)
                         Spacer()
-                        Text("Maximum (10.0x)")
+                        Text("Maximum (5.0x)")
                             .font(.system(size: 9))
                             .foregroundColor(.secondary)
                     }

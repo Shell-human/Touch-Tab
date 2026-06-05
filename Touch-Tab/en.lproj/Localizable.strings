@@ -12,9 +12,9 @@
 "Switching Delay" = "Switching Delay";
 "Instant (0ms)" = "Instant (0ms)";
 "Slower (300ms)" = "Slower (300ms)";
-"Velocity Multiplier" = "Velocity Multiplier";
-"Normal (1.0x)" = "Normal (1.0x)";
-"Maximum (10.0x)" = "Maximum (10.0x)";
+"Gesture Acceleration" = "Gesture Acceleration";
+"Linear (0.0x)" = "Linear (0.0x)";
+"Maximum (5.0x)" = "Maximum (5.0x)";
 "Reset to Defaults" = "Reset to Defaults";
 "Quit" = "Quit";
 

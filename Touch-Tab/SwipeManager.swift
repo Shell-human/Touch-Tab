@@ -119,7 +119,10 @@ enum SwipeManager {
             return false
         }
 
-        accVelX += velX * Settings.shared.velocityMultiplier
+        let speed = abs(velX)
+        let accelFactor = Settings.shared.gestureAcceleration
+        let dynamicMultiplier = 1.0 + (speed * 100.0 * accelFactor)
+        accVelX += velX * dynamicMultiplier
         if abs(accVelX) < accVelXThreshold {
             return true
         }
@@ -214,8 +217,8 @@ class Settings {
         didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
-    var velocityMultiplier: Float {
-        didSet { UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier") }
+    var gestureAcceleration: Float {
+        didSet { UserDefaults.standard.set(gestureAcceleration, forKey: "gestureAcceleration") }
     }
 
     var isLaunchAtLoginEnabled: Bool {
@@ -242,12 +245,22 @@ class Settings {
         UserDefaults.standard.register(defaults: [
             "accVelXThreshold": Float(0.045),
             "appSwitcherUIDelay": Double(0.150),
-            "velocityMultiplier": Float(1.0),
+            "gestureAcceleration": Float(1.0),
             "showMenuBarIcon": true
         ])
         self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
-        self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
+        
+        // Migrate velocityMultiplier to gestureAcceleration if needed
+        if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil {
+            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Float ?? 1.0
+            let inheritedVal = min(max(oldVal, 0.0), 5.0)
+            self.gestureAcceleration = inheritedVal
+            UserDefaults.standard.set(inheritedVal, forKey: "gestureAcceleration")
+        } else {
+            self.gestureAcceleration = UserDefaults.standard.float(forKey: "gestureAcceleration")
+        }
+        
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
         self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
     }
@@ -256,7 +269,7 @@ class Settings {
     func resetToDefaults() {
         accVelXThreshold = 0.045
         appSwitcherUIDelay = 0.150
-        velocityMultiplier = 1.0
+        gestureAcceleration = 1.0
         showMenuBarIcon = true
     }
 }

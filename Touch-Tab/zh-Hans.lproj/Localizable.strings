@@ -12,9 +12,9 @@
 "Switching Delay" = "切换延迟";
 "Instant (0ms)" = "即时 (0ms)";
 "Slower (300ms)" = "更慢 (300ms)";
-"Velocity Multiplier" = "速度倍率";
-"Normal (1.0x)" = "正常 (1.0x)";
-"Maximum (10.0x)" = "最大 (10.0x)";
+"Gesture Acceleration" = "手势加速度";
+"Linear (0.0x)" = "无加速度 (0.0x)";
+"Maximum (5.0x)" = "最大 (5.0x)";
 "Reset to Defaults" = "恢复默认值";
 "Quit" = "退出";
 
