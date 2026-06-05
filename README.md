@@ -20,11 +20,16 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 * **开机自启动**：在首选项中一键开启/关闭开机自启。
 
 ### 📦 下载与安装
+
+> [!IMPORTANT]
+> **最低系统要求**：本版本基于 Swift 6 与 Observation 框架重构，仅支持 **macOS 14.0 (Sonoma) 及以上系统**。
+> 
+> **⚠️ 关键必看配置**：在运行本软件前，**必须先将系统默认的三指轻扫改掉或关闭**。请打开 `系统设置 > 触控板 > 更多手势 > 在全屏幕应用之间轻扫`，将其**关闭**或改为**“四指轻扫”**。否则系统的三指左右手势会霸占系统权限，导致软件的三指手势失效或冲突。
+
 1. **下载安装包**：前往 [Releases 页面](https://github.com/Shell-human/Touch-Tab/releases) 下载最新的 **`Touch-Tab.dmg`**。
 2. **快速安装**：双击打开 `.dmg` 镜像，将 **Touch-Tab** 拖入 **Applications**（应用程序）文件夹中运行。
 3. **系统权限配置**：
    * **辅助功能 (Accessibility)**：打开 `系统设置 > 隐私与安全性 > 辅助功能`，勾选允许 **Touch-Tab** 控制电脑。
-   * **触控板设置**：打开 `系统设置 > 触控板 > 更多手势 > 在全屏幕应用之间轻扫`，将其**关闭**或改为“四指轻扫”，以防系统默认手势与软件的三指手势冲突。
 
 ### 💡 使用贴士
 > [!TIP]
@@ -53,11 +58,16 @@ chmod +x build_app.sh
 * **Launch at Login**: Easily enable or disable autostart directly from the Preferences window.
 
 ### 📦 Download & Installation
+
+> [!IMPORTANT]
+> **System Requirements**: This version is built with Swift 6 and the Observation framework, supporting only **macOS 14.0 (Sonoma) or newer**.
+> 
+> **⚠️ Critical Configuration**: Before launching the application, you **MUST disable or change the system default 3-finger swipe gesture**. Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps`, and **disable** it or change it to **"Swipe with four fingers"**. Otherwise, the default system gesture will block Touch-Tab, causing the 3-finger swipe to fail.
+
 1. **Download**: Go to the [Releases page](https://github.com/Shell-human/Touch-Tab/releases) and download the latest **`Touch-Tab.dmg`**.
 2. **Install**: Double-click the `.dmg` file and drag **Touch-Tab** into your **Applications** folder.
 3. **System Configuration**:
    * **Accessibility**: Open `System Settings > Privacy & Security > Accessibility` and authorize **Touch-Tab**.
-   * **Trackpad**: Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps` and **disable** it (or change it to 4 fingers) to prevent conflict with Touch-Tab's 3-finger swipe.
 
 ### 💡 Useful Tips
 > [!TIP]
