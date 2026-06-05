@@ -10,34 +10,66 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 
 ---
 
-## 🌟 核心功能 / Key Features
+## 🇨🇳 中文说明
 
-* **3-Finger Swipe / 三指切换**：Swipe left/right with 3 fingers to switch apps; hold or swipe slowly to show App Switcher. (三指左右轻扫快速切换应用，慢滑或按住呼出切换窗口)。
-* **Custom Preferences / 自定义设置**：Adjust swipe sensitivity, guard delay, and velocity multiplier to achieve a smooth "flywheel" scrolling feel. (自由调节灵敏度、延迟与速度乘数，实现丝滑的“飞轮”滚动切换)。
-* **Background Scroll Fix / 滚动拦截**：Swallows horizontal 3-finger swipe events to prevent background window content from scrolling. (吞除横向手势，解决切换应用时导致的后台页面滚动冲突)。
-* **Menu Bar Toggle / 菜单栏图标隐藏**：Show or hide status bar icon in Preferences; if hidden, app runs silently in background (re-launch the app to reopen settings). (可在首选项中隐藏菜单栏图标，隐藏后后台静默常驻；再次打开应用即可重新调出设置)。
-* **Launch at Login / 开机自启动**：Toggle directly from preferences (macOS 13+). (首选项一键开启开机自启)。
+### 🌟 核心功能
+* **三指轻扫切换**：用三指水平左右轻扫快速切换应用，慢滑或按住可呼出 App 切换器窗口（App Switcher）。
+* **自定义设置**：在首选项中自由调节滑动灵敏度、触发延迟与速度乘数，调配出最适合您的丝滑手势。
+* **背景滚动拦截**：吞除轻扫时的滚动事件，彻底解决原版中切换应用时导致的后台窗口页面跟着滚动的烦人 Bug。
+* **状态栏图标隐藏**：支持在首选项中隐藏菜单栏图标，隐藏后程序在后台静默且常驻运行。
+* **开机自启动**：在首选项中一键开启/关闭开机自启。
 
----
+### 📦 下载与安装
+1. **下载安装包**：前往 [Releases 页面](https://github.com/Shell-human/Touch-Tab/releases) 下载最新的 **`Touch-Tab.dmg`**。
+2. **快速安装**：双击打开 `.dmg` 镜像，将 **Touch-Tab** 拖入 **Applications**（应用程序）文件夹中运行。
+3. **系统权限配置**：
+   * **辅助功能 (Accessibility)**：打开 `系统设置 > 隐私与安全性 > 辅助功能`，勾选允许 **Touch-Tab** 控制电脑。
+   * **触控板设置**：打开 `系统设置 > 触控板 > 更多手势 > 在全屏幕应用之间轻扫`，将其**关闭**或改为“四指轻扫”，以防系统默认手势与软件的三指手势冲突。
 
-## 📦 下载与安装 / Download & Installation
+### 💡 使用贴士
+> [!TIP]
+> **重新安装/升级注意**：如果您之前安装过 Touch-Tab，重新安装或更新版本后可能会出现手势失效的情况。请在 `系统设置 > 隐私与安全性 > 辅助功能` 的列表中，先选中老的 Touch-Tab 并点击列表下方的 **`-` (减号)** 将其移除，然后再点击 **`+` (加号)** 重新将新版 Touch-Tab 添加进来并开启授权。
 
-1. **下载安装包 / Download**:
-   * 前往 [Releases 页面](https://github.com/Shell-human/Touch-Tab/releases) 下载最新的 **`Touch-Tab.dmg`**。
-   * Download the latest **`Touch-Tab.dmg`** from the [Releases page](https://github.com/Shell-human/Touch-Tab/releases).
-2. **安装 / Install**:
-   * 双击打开 `Touch-Tab.dmg`，将 **Touch-Tab** 拖入 **Applications** (应用程序) 文件夹中运行。
-   * Open `Touch-Tab.dmg` and drag **Touch-Tab** to the **Applications** folder.
-3. **系统设置 / System Settings**:
-   * **辅助功能 / Accessibility**: Open `System Settings > Privacy & Security > Accessibility` and authorize **Touch-Tab**. (在系统设置的辅助功能中允许 Touch-Tab 控制电脑)。
-   * **触控板设置 / Trackpad**: Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps` and **disable** it or change it to 4 fingers. (在触控板设置中，关闭“在全屏幕应用之间轻扫”或改为“四指轻扫”以防手势冲突)。
+> [!NOTE]
+> **如何恢复菜单栏图标**：如果您在首选项中隐藏了菜单栏图标，只需在「应用程序」文件夹（或通过 Spotlight / Launchpad）**再次双击运行 Touch-Tab**，即可重新调出首选项窗口将其勾选回来。
 
----
-
-## 🛠 编译开发 / Compilation
-
+### 🛠 编译开发
+如果您想自行编译：
 ```bash
 chmod +x build_app.sh
 ./build_app.sh
 ```
-*Compiled app and installer package will be outputted to `build/` directory.*
+编译生成的 `.app` 包和 `.dmg` 安装盘将存放在 `build/` 目录下。
+
+---
+
+## 🇺🇸 English Guide
+
+### 🌟 Key Features
+* **3-Finger Swipe**: Swipe left/right with 3 fingers to switch apps; hold or swipe slowly to show the macOS App Switcher UI.
+* **Custom Settings**: Adjust swipe sensitivity, trigger delay, and velocity multiplier in Preferences to achieve a smooth and personalized gesture experience.
+* **Background Scroll Guard**: Swallows horizontal 3-finger swipe events, fixing the bug in the original app where background window content scrolled during app switching.
+* **Hide Menu Bar Icon**: Toggle the status bar icon visibility in Preferences; if hidden, the application runs silently and persistently in the background.
+* **Launch at Login**: Easily enable or disable autostart directly from the Preferences window.
+
+### 📦 Download & Installation
+1. **Download**: Go to the [Releases page](https://github.com/Shell-human/Touch-Tab/releases) and download the latest **`Touch-Tab.dmg`**.
+2. **Install**: Double-click the `.dmg` file and drag **Touch-Tab** into your **Applications** folder.
+3. **System Configuration**:
+   * **Accessibility**: Open `System Settings > Privacy & Security > Accessibility` and authorize **Touch-Tab**.
+   * **Trackpad**: Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps` and **disable** it (or change it to 4 fingers) to prevent conflict with Touch-Tab's 3-finger swipe.
+
+### 💡 Useful Tips
+> [!TIP]
+> **Reinstallation / Upgrade Warning**: If you have previously installed Touch-Tab, you might experience issues where gestures don't work after upgrading. To fix this, go to `System Settings > Privacy & Security > Accessibility`, select the old Touch-Tab entry, click the **`-` (minus)** button to remove it completely, then click the **`+` (plus)** button to re-add the new Touch-Tab application and enable its permission.
+
+> [!NOTE]
+> **How to Restore the Menu Bar Icon**: If you hid the menu bar status icon in Preferences, simply **re-launch the Touch-Tab application** from your Applications folder (or via Spotlight / Launchpad) to reopen the Preferences window and check the toggle again.
+
+### 🛠 Compilation
+To build the application manually:
+```bash
+chmod +x build_app.sh
+./build_app.sh
+```
+The compiled app bundle and DMG installer will be saved to the `build/` directory.
