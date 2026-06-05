@@ -1,4 +1,5 @@
 import Cocoa
+import Observation
 import ServiceManagement
 
 enum AppSwitcher {
@@ -201,42 +202,39 @@ enum SwipeManager {
     }
 }
 
-class Settings: ObservableObject {
+@Observable
+class Settings {
     static let shared = Settings()
 
-    @Published var accVelXThreshold: Float {
+    var accVelXThreshold: Float {
         didSet { UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold") }
     }
 
-    @Published var appSwitcherUIDelay: Double {
+    var appSwitcherUIDelay: Double {
         didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
-    @Published var velocityMultiplier: Float {
+    var velocityMultiplier: Float {
         didSet { UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier") }
     }
 
-    @Published var isLaunchAtLoginEnabled: Bool {
+    var isLaunchAtLoginEnabled: Bool {
         didSet {
-            if #available(macOS 13.0, *) {
-                let service = SMAppService.mainApp
-                do {
-                    if isLaunchAtLoginEnabled {
-                        if service.status != .enabled { try service.register() }
-                    } else {
-                        if service.status == .enabled { try service.unregister() }
-                    }
-                } catch {
-                    debugPrint("Failed to set launch status: \(error)")
-                    isLaunchAtLoginEnabled = service.status == .enabled
+            let service = SMAppService.mainApp
+            do {
+                if isLaunchAtLoginEnabled {
+                    if service.status != .enabled { try service.register() }
+                } else {
+                    if service.status == .enabled { try service.unregister() }
                 }
-            } else {
-                debugPrint("SMAppService is only available on macOS 13.0 or newer")
+            } catch {
+                debugPrint("Failed to set launch status: \(error)")
+                isLaunchAtLoginEnabled = service.status == .enabled
             }
         }
     }
 
-    @Published var showMenuBarIcon: Bool {
+    var showMenuBarIcon: Bool {
         didSet { UserDefaults.standard.set(showMenuBarIcon, forKey: "showMenuBarIcon") }
     }
 
@@ -251,12 +249,7 @@ class Settings: ObservableObject {
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
-        
-        if #available(macOS 13.0, *) {
-            self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
-        } else {
-            self.isLaunchAtLoginEnabled = false
-        }
+        self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
     }
 
 

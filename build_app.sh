@@ -10,13 +10,13 @@ mkdir -p build/Touch-Tab.app/Contents/Resources
 
 # 2. Compile the Swift files (Universal Binary: arm64 + x86_64)
 echo "Compiling Swift source files for x86_64..."
-swiftc -target x86_64-apple-macosx12.0 -o build/Touch-Tab-x86_64 \
+swiftc -target x86_64-apple-macosx14.0 -o build/Touch-Tab-x86_64 \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
 
 echo "Compiling Swift source files for arm64..."
-swiftc -target arm64-apple-macosx12.0 -o build/Touch-Tab-arm64 \
+swiftc -target arm64-apple-macosx14.0 -o build/Touch-Tab-arm64 \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
