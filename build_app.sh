@@ -12,9 +12,6 @@ mkdir -p build/Touch-Tab.app/Contents/Resources
 echo "Compiling Swift source files..."
 swiftc -o build/Touch-Tab.app/Contents/MacOS/Touch-Tab \
     Touch-Tab/AboutView.swift \
-    Touch-Tab/AppSwitcher.swift \
-    Touch-Tab/BundleInfo.swift \
-    Touch-Tab/PrivacyHelper.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
 

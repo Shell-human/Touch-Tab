@@ -9,13 +9,13 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 16) {
             // Header / App Info
             HStack(alignment: .center, spacing: 16) {
-                Image(nsImage: NSImage(named: BundleInfo.iconName()) ?? NSImage())
+                Image("AppIcon")
                     .resizable()
                     .frame(width: 48, height: 48)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(BundleInfo.displayName())
+                    Text(Bundle.main.displayName)
                         .font(.system(size: 15, weight: .bold))
-                    Text("Version \(BundleInfo.version()) (\(BundleInfo.build()))")
+                    Text("Version \(Bundle.main.version) (\(Bundle.main.build))")
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
@@ -138,7 +138,7 @@ struct AboutView: View {
             
             // Footer
             HStack {
-                Text(BundleInfo.copyright())
+                Text(Bundle.main.copyright)
                     .font(.system(size: 10))
                     .foregroundColor(.secondary)
                 Spacer()

@@ -16,7 +16,7 @@ class AppState {
     }
     
     func requestPermission(completion: @escaping () -> Void) {
-        if PrivacyHelper.isProcessTrustedWithPrompt() {
+        if isProcessTrustedWithPrompt() {
             isTrusted = true
             completion()
         } else {
@@ -28,6 +28,24 @@ class AppState {
                     completion()
                 }
             }
+        }
+    }
+    
+    private func isProcessTrustedWithPrompt() -> Bool {
+        let isAccessibilityPermissionGranted = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String : true] as CFDictionary)
+        if isAccessibilityPermissionGranted {
+            return true
+        } else {
+            // Trigger OS permission dialog from sandbox
+            _ = CGEvent.tapCreate(
+                tap: .cghidEventTap,
+                place: .headInsertEventTap,
+                options: .defaultTap,
+                eventsOfInterest: NSEvent.EventTypeMask.gesture.rawValue,
+                callback: { _, _, event, _ in Unmanaged.passUnretained(event) },
+                userInfo: nil
+            )
+            return false
         }
     }
 }
@@ -89,4 +107,11 @@ struct TouchTabApp: App {
     private func openPreferences() {
         PreferencesWindowController.shared.show()
     }
+}
+
+extension Bundle {
+    var displayName: String { object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "" }
+    var version: String { object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "" }
+    var build: String { object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "" }
+    var copyright: String { object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String ?? "" }
 }

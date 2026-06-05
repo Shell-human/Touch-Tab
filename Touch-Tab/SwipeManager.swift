@@ -2,22 +2,41 @@ import Cocoa
 import Observation
 import ServiceManagement
 
-class SwipeManager {
-    private static var accVelXThreshold: Float {
-        return Settings.shared.accVelXThreshold
+enum AppSwitcher {
+    private static let keyboardEventSource = CGEventSource(stateID: .hidSystemState)
+    private static let tabKey: CGKeyCode = 0x30
+    private static let leftCommandKey: CGKeyCode = 0x37
+
+    static func selectInAppSwitcher() {
+        postKeyEvent(key: leftCommandKey, down: false)
     }
-    private static var appSwitcherUIDelay: Double {
-        return Settings.shared.appSwitcherUIDelay
+
+    static func cmdTab() {
+        postKeyEvent(key: tabKey, down: true, flags: .maskCommand)
+        postKeyEvent(key: tabKey, down: false, flags: .maskCommand)
     }
+
+    static func cmdShiftTab() {
+        postKeyEvent(key: tabKey, down: true, flags: [.maskCommand, .maskShift])
+        postKeyEvent(key: tabKey, down: false, flags: [.maskCommand, .maskShift])
+    }
+
+    private static func postKeyEvent(key: CGKeyCode, down: Bool, flags: CGEventFlags = []) {
+        let event = CGEvent(keyboardEventSource: keyboardEventSource, virtualKey: key, keyDown: down)
+        event?.flags = flags
+        event?.post(tap: .cghidEventTap)
+    }
+}
+
+enum SwipeManager {
+    private static var accVelXThreshold: Float { Settings.shared.accVelXThreshold }
+    private static var appSwitcherUIDelay: Double { Settings.shared.appSwitcherUIDelay }
 
     private static var eventTap: CFMachPort? = nil
-    // Event state.
     private static var accVelX: Float = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
-    // Gesture state. Gesture may consists of multiple events.
     private static var startTime: Date? = nil
 
-    //TODO: move it somewhere else?
     private static func listener(_ eventType: EventType) {
         switch eventType {
         case .startOrContinue(.left):
@@ -30,7 +49,7 @@ class SwipeManager {
     }
 
     static func start() {
-        if eventTap != nil {
+        guard eventTap == nil else {
             debugPrint("SwipeManager is already started")
             return
         }
@@ -41,38 +60,37 @@ class SwipeManager {
             options: .defaultTap,
             eventsOfInterest: NSEvent.EventTypeMask.gesture.rawValue,
             callback: { proxy, type, cgEvent, userInfo in
-                return SwipeManager.eventHandler(proxy: proxy, eventType: type, cgEvent: cgEvent, userInfo: userInfo)
+                SwipeManager.eventHandler(proxy: proxy, eventType: type, cgEvent: cgEvent, userInfo: userInfo)
             },
             userInfo: nil
         )
-        if eventTap == nil {
+        guard let eventTap else {
             debugPrint("SwipeManager couldn't create event tap")
             return
         }
         
         let runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.commonModes)
-        CGEvent.tapEnable(tap: eventTap!, enable: true)
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        CGEvent.tapEnable(tap: eventTap, enable: true)
     }
     
     private static func eventHandler(proxy: CGEventTapProxy, eventType: CGEventType, cgEvent: CGEvent, userInfo: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
         var swallow = false
         if eventType.rawValue == NSEvent.EventType.gesture.rawValue, let nsEvent = NSEvent(cgEvent: cgEvent) {
             swallow = touchEventHandler(nsEvent)
-        } else if (eventType == .tapDisabledByUserInput || eventType == .tapDisabledByTimeout) {
+        } else if eventType == .tapDisabledByUserInput || eventType == .tapDisabledByTimeout {
             debugPrint("SwipeManager tap disabled", eventType.rawValue)
-            CGEvent.tapEnable(tap: eventTap!, enable: true)
+            if let eventTap {
+                CGEvent.tapEnable(tap: eventTap, enable: true)
+            }
         }
         return swallow ? nil : Unmanaged.passUnretained(cgEvent)
     }
     
     private static func touchEventHandler(_ nsEvent: NSEvent) -> Bool {
         let touches = nsEvent.allTouches()
-
-        // Sometimes there are empty touch events that we have to skip. There are no empty touch events if Mission Control or App Expose use 3-finger swipes though.
-        if touches.isEmpty {
-            return false
-        }
+        guard !touches.isEmpty else { return false }
+        
         let touchesCount = touches.allSatisfy({ $0.phase == .ended }) ? 0 : touches.count
 
         switch touchesCount {
@@ -88,19 +106,15 @@ class SwipeManager {
     }
 
     private static func processTwoFingers() {
-        // Two fingers scrolling in App Switcher is OK but we shouldn't accumulate gesture velocity here.
         clearEventState()
     }
 
     private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
-        let velX = SwipeManager.horizontalSwipeVelocity(touches: touches)
-        // We don't care about non-horizontal swipes.
-        if velX == nil {
+        guard let velX = horizontalSwipeVelocity(touches: touches) else {
             return false
         }
 
-        accVelX += velX! * Settings.shared.velocityMultiplier
-        // Not enough swiping.
+        accVelX += velX * Settings.shared.velocityMultiplier
         if abs(accVelX) < accVelXThreshold {
             return true
         }
@@ -110,7 +124,6 @@ class SwipeManager {
         } else {
             let interval = startTime!.timeIntervalSinceNow
             if -interval < appSwitcherUIDelay {
-                // We skip subsequent events until App Switcher UI is shown.
                 clearEventState()
                 return true
             }
@@ -146,8 +159,9 @@ class SwipeManager {
     private static func horizontalSwipeVelocity(touches: Set<NSTouch>) -> Float? {
         var allRight = true
         var allLeft = true
-        var sumVelX = Float(0)
-        var sumVelY = Float(0)
+        var sumVelX: Float = 0
+        var sumVelY: Float = 0
+        
         for touch in touches {
             let (velX, velY) = touchVelocity(touch)
             allRight = allRight && velX >= 0
@@ -161,17 +175,12 @@ class SwipeManager {
                 prevTouchPositions["\(touch.identity)"] = touch.normalizedPosition
             }
         }
-        // All fingers should move in the same direction.
-        if !allRight && !allLeft {
-            return nil
-        }
+        
+        guard allRight || allLeft else { return nil }
 
         let velX = sumVelX / Float(touches.count)
         let velY = sumVelY / Float(touches.count)
-        // Only horizontal swipes are interesting.
-        if abs(velX) <= abs(velY) {
-            return nil
-        }
+        guard abs(velX) > abs(velY) else { return nil }
 
         return velX
     }
@@ -200,21 +209,15 @@ class Settings {
     static let shared = Settings()
 
     var accVelXThreshold: Float {
-        didSet {
-            UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold")
-        }
+        didSet { UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold") }
     }
 
     var appSwitcherUIDelay: Double {
-        didSet {
-            UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay")
-        }
+        didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
     var velocityMultiplier: Float {
-        didSet {
-            UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier")
-        }
+        didSet { UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier") }
     }
 
     var isLaunchAtLoginEnabled: Bool {
@@ -223,16 +226,12 @@ class Settings {
                 let service = SMAppService.mainApp
                 do {
                     if isLaunchAtLoginEnabled {
-                        if service.status != .enabled {
-                            try service.register()
-                        }
+                        if service.status != .enabled { try service.register() }
                     } else {
-                        if service.status == .enabled {
-                            try service.unregister()
-                        }
+                        if service.status == .enabled { try service.unregister() }
                     }
                 } catch {
-                    debugPrint("Failed to set launch at login status: \(error)")
+                    debugPrint("Failed to set launch status: \(error)")
                 }
             }
         }
