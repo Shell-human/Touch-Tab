@@ -68,44 +68,90 @@ class PreferencesWindowController: NSObject {
     }
 }
 
-@main
-struct TouchTabApp: App {
-    @State private var appState = AppState.shared
+@MainActor
+class AppDelegate: NSObject, NSApplicationDelegate {
+    private var statusBarItem: NSStatusItem?
     
-    init() {
+    func applicationDidFinishLaunching(_ notification: Notification) {
         AppState.shared.requestPermission {
             SwipeManager.start()
         }
+        
+        createStatusBarItem()
+        observeAppState()
     }
     
-    var body: some Scene {
-        MenuBarExtra {
-            if !appState.isTrusted {
-                Button("No Accessibility Access - Authorize...") {
-                    openPrivacyAccessibility()
-                }
-                Divider()
+    private func observeAppState() {
+        withObservationTracking {
+            _ = AppState.shared.isTrusted
+        } onChange: {
+            DispatchQueue.main.async {
+                self.updateStatusIcon()
+                self.observeAppState()
             }
-            
-            Button("Preferences...") {
-                openPreferences()
-            }
-            Divider()
-            Button("Quit") {
-                NSApplication.shared.terminate(nil)
-            }
-        } label: {
-            Image(nsImage: NSImage(named: appState.isTrusted ? "StatusIcon" : "StatusIcon-Warning") ?? NSImage())
         }
     }
     
-    private func openPrivacyAccessibility() {
+    private func createStatusBarItem() {
+        statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusBarItem?.behavior = .removalAllowed
+        updateStatusIcon()
+        
+        let menu = NSMenu()
+        statusBarItem?.menu = menu
+        rebuildMenu()
+    }
+    
+    private func updateStatusIcon() {
+        let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
+        statusBarItem?.button?.image = NSImage(named: iconName)
+        rebuildMenu()
+    }
+    
+    private func rebuildMenu() {
+        guard let menu = statusBarItem?.menu else { return }
+        menu.removeAllItems()
+        
+        if !AppState.shared.isTrusted {
+            let warningItem = NSMenuItem(title: "No Accessibility Access - Authorize...", action: #selector(openPrivacyAccessibility), keyEquivalent: "")
+            warningItem.target = self
+            menu.addItem(warningItem)
+            menu.addItem(NSMenuItem.separator())
+        }
+        
+        let prefsItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences), keyEquivalent: "")
+        prefsItem.target = self
+        menu.addItem(prefsItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "")
+        quitItem.target = self
+        menu.addItem(quitItem)
+    }
+    
+    @objc private func openPrivacyAccessibility() {
         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
         NSWorkspace.shared.open(url)
     }
     
-    private func openPreferences() {
+    @objc private func openPreferences() {
         PreferencesWindowController.shared.show()
+    }
+    
+    @objc private func quitApp() {
+        NSApplication.shared.terminate(nil)
+    }
+}
+
+@main
+struct TouchTabApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    var body: some Scene {
+        SwiftUI.Settings {
+            EmptyView()
+        }
     }
 }
 
