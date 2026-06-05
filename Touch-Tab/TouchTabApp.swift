@@ -11,10 +11,6 @@ class AppState {
         isTrusted = AXIsProcessTrusted()
     }
     
-    func checkPermission() {
-        isTrusted = AXIsProcessTrusted()
-    }
-    
     func requestPermission(completion: @escaping () -> Void) {
         if isProcessTrustedWithPrompt() {
             isTrusted = true

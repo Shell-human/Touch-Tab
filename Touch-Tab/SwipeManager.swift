@@ -37,17 +37,6 @@ enum SwipeManager {
     private static var prevTouchPositions: [String: NSPoint] = [:]
     private static var startTime: Date? = nil
 
-    private static func listener(_ eventType: EventType) {
-        switch eventType {
-        case .startOrContinue(.left):
-            AppSwitcher.cmdShiftTab()
-        case .startOrContinue(.right):
-            AppSwitcher.cmdTab()
-        case .end:
-            AppSwitcher.selectInAppSwitcher()
-        }
-    }
-
     static func start() {
         guard eventTap == nil else {
             debugPrint("SwipeManager is already started")
@@ -59,8 +48,8 @@ enum SwipeManager {
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: NSEvent.EventTypeMask.gesture.rawValue,
-            callback: { proxy, type, cgEvent, userInfo in
-                SwipeManager.eventHandler(proxy: proxy, eventType: type, cgEvent: cgEvent, userInfo: userInfo)
+            callback: { _, type, cgEvent, _ in
+                SwipeManager.eventHandler(type, cgEvent: cgEvent)
             },
             userInfo: nil
         )
@@ -74,7 +63,7 @@ enum SwipeManager {
         CGEvent.tapEnable(tap: eventTap, enable: true)
     }
     
-    private static func eventHandler(proxy: CGEventTapProxy, eventType: CGEventType, cgEvent: CGEvent, userInfo: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
+    private static func eventHandler(_ eventType: CGEventType, cgEvent: CGEvent) -> Unmanaged<CGEvent>? {
         var swallow = false
         if eventType.rawValue == NSEvent.EventType.gesture.rawValue, let nsEvent = NSEvent(cgEvent: cgEvent) {
             swallow = touchEventHandler(nsEvent)
@@ -95,7 +84,7 @@ enum SwipeManager {
 
         switch touchesCount {
         case 2:
-            processTwoFingers()
+            clearEventState()
             return false
         case 3:
             return processThreeFingers(touches: touches)
@@ -103,10 +92,6 @@ enum SwipeManager {
             processOtherFingers()
             return false
         }
-    }
-
-    private static func processTwoFingers() {
-        clearEventState()
     }
 
     private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
@@ -148,12 +133,15 @@ enum SwipeManager {
     }
 
     private static func startOrContinueGesture() {
-        let direction: EventType.Direction = accVelX < 0 ? .left : .right
-        listener(.startOrContinue(direction: direction))
+        if accVelX < 0 {
+            AppSwitcher.cmdShiftTab()
+        } else {
+            AppSwitcher.cmdTab()
+        }
     }
 
     private static func endGesture() {
-        listener(.end)
+        AppSwitcher.selectInAppSwitcher()
     }
 
     private static func horizontalSwipeVelocity(touches: Set<NSTouch>) -> Float? {
@@ -192,16 +180,6 @@ enum SwipeManager {
         let position = touch.normalizedPosition
         return (Float(position.x - prevPosition.x), Float(position.y - prevPosition.y))
     }
-
-    enum EventType {
-        case startOrContinue(direction: Direction)
-        case end
-
-        enum Direction {
-            case left
-            case right
-        }
-    }
 }
 
 @Observable
@@ -222,17 +200,16 @@ class Settings {
 
     var isLaunchAtLoginEnabled: Bool {
         didSet {
-            if #available(macOS 13.0, *) {
-                let service = SMAppService.mainApp
-                do {
-                    if isLaunchAtLoginEnabled {
-                        if service.status != .enabled { try service.register() }
-                    } else {
-                        if service.status == .enabled { try service.unregister() }
-                    }
-                } catch {
-                    debugPrint("Failed to set launch status: \(error)")
+            let service = SMAppService.mainApp
+            do {
+                if isLaunchAtLoginEnabled {
+                    if service.status != .enabled { try service.register() }
+                } else {
+                    if service.status == .enabled { try service.unregister() }
                 }
+            } catch {
+                debugPrint("Failed to set launch status: \(error)")
+                isLaunchAtLoginEnabled = service.status == .enabled
             }
         }
     }
@@ -252,12 +229,7 @@ class Settings {
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
-        
-        if #available(macOS 13.0, *) {
-            self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
-        } else {
-            self.isLaunchAtLoginEnabled = false
-        }
+        self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
     }
 
     func resetToDefaults() {

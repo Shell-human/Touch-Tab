@@ -1,8 +1,8 @@
 import SwiftUI
-import Observation
 
 struct AboutView: View {
     @State private var settings = Settings.shared
+    @State private var appState = AppState.shared
     
     var body: some View {
         @Bindable var settings = settings
@@ -24,6 +24,36 @@ struct AboutView: View {
             
             Divider()
             
+            // Warning Banner if not trusted
+            if !appState.isTrusted {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                            .imageScale(.small)
+                        Text("Accessibility Access Required")
+                            .font(.system(size: 11, weight: .bold))
+                    }
+                    Text("Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("Open System Settings") {
+                        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+                        NSWorkspace.shared.open(url)
+                    }
+                    .buttonStyle(BorderedButtonStyle())
+                    .controlSize(.mini)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.orange.opacity(0.1))
+                .cornerRadius(6)
+                
+                Divider()
+            }
+            
             // Settings Sliders
             VStack(alignment: .leading, spacing: 12) {
                 Text("Preferences")
@@ -31,10 +61,8 @@ struct AboutView: View {
                 
                 // Toggle Options
                 VStack(alignment: .leading, spacing: 8) {
-                    if #available(macOS 13.0, *) {
-                        Toggle("Launch at Login", isOn: $settings.isLaunchAtLoginEnabled)
-                            .font(.system(size: 12))
-                    }
+                    Toggle("Launch at Login", isOn: $settings.isLaunchAtLoginEnabled)
+                        .font(.system(size: 12))
                     Toggle("Show Icon in Menu Bar", isOn: $settings.showMenuBarIcon)
                         .font(.system(size: 12))
                 }
