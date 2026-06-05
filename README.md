@@ -15,6 +15,7 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 * **3-Finger Swipe / 三指切换**：Swipe left/right with 3 fingers to switch apps; hold or swipe slowly to show App Switcher. (三指左右轻扫快速切换应用，慢滑或按住呼出切换窗口)。
 * **Custom Preferences / 自定义设置**：Adjust swipe sensitivity, guard delay, and velocity multiplier to achieve a smooth "flywheel" scrolling feel. (自由调节灵敏度、延迟与速度乘数，实现丝滑的“飞轮”滚动切换)。
 * **Background Scroll Fix / 滚动拦截**：Swallows horizontal 3-finger swipe events to prevent background window content from scrolling. (吞除横向手势，解决切换应用时导致的后台页面滚动冲突)。
+* **Menu Bar Toggle / 菜单栏图标隐藏**：Show or hide status bar icon in Preferences; if hidden, app runs silently in background (re-launch the app to reopen settings). (可在首选项中隐藏菜单栏图标，隐藏后后台静默常驻；再次打开应用即可重新调出设置)。
 * **Launch at Login / 开机自启动**：Toggle directly from preferences (macOS 13+). (首选项一键开启开机自启)。
 
 ---
