@@ -2,6 +2,10 @@ import Cocoa
 import SwiftUI
 import Observation
 
+// MARK: - Accessibility Permission State
+
+/// Monitors and manages macOS Accessibility (AX) permission status.
+/// All access is expected on the main thread (Timer fires on main RunLoop).
 @Observable
 class AppState {
     static let shared = AppState()
@@ -12,6 +16,8 @@ class AppState {
         isTrusted = AXIsProcessTrusted()
     }
     
+    /// Requests Accessibility permission with a system prompt dialog.
+    /// Polls every second until granted, then invokes `completion` on the main thread.
     func requestPermission(completion: @escaping () -> Void) {
         permissionTimer?.invalidate()
         if isProcessTrustedWithPrompt() {
@@ -35,8 +41,11 @@ class AppState {
     }
 }
 
+// MARK: - Preferences Window
+
+/// Manages a single Preferences window instance, creating it lazily and cleaning up on close.
 @MainActor
-class PreferencesWindowController: NSObject {
+class PreferencesWindowController: NSObject, NSWindowDelegate {
     static let shared = PreferencesWindowController()
     private var window: NSWindow?
     
@@ -47,13 +56,20 @@ class PreferencesWindowController: NSObject {
             w.styleMask = [.closable, .titled]
             w.title = ""
             w.isReleasedWhenClosed = false
+            w.delegate = self
             self.window = w
         }
         window?.center()
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
+    
+    func windowWillClose(_ notification: Notification) {
+        window = nil
+    }
 }
+
+// MARK: - App Delegate
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -127,7 +143,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
         let image = NSImage(named: iconName)
         if image == nil {
-            print("WARNING: Status bar icon image '\(iconName)' is nil!")
+            debugPrint("Status bar icon image '\(iconName)' not found in bundle")
         }
         item.button?.image = image
         rebuildMenu()
@@ -139,7 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         if !AppState.shared.isTrusted {
             let warningItem = NSMenuItem(
-                title: NSLocalizedString("No Accessibility Access - Authorize...", comment: ""),
+                title: NSLocalizedString("No Accessibility Access - Authorize...", comment: "Menu bar item shown when AX permission is missing"),
                 action: #selector(openPrivacyAccessibility),
                 keyEquivalent: ""
             )
@@ -149,7 +165,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         let prefsItem = NSMenuItem(
-            title: NSLocalizedString("Preferences...", comment: ""),
+            title: NSLocalizedString("Preferences...", comment: "Menu bar item to open the Preferences window"),
             action: #selector(openPreferences),
             keyEquivalent: ""
         )
@@ -159,7 +175,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
         
         let quitItem = NSMenuItem(
-            title: NSLocalizedString("Quit", comment: ""),
+            title: NSLocalizedString("Quit", comment: "Menu bar item to quit the application"),
             action: #selector(quitApp),
             keyEquivalent: ""
         )
@@ -181,6 +197,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
+// MARK: - App Entry Point
+
 @main
 struct TouchTabApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -192,7 +210,10 @@ struct TouchTabApp: App {
     }
 }
 
+// MARK: - Bundle Helpers
+
 extension Bundle {
+    /// Returns the user-facing display name, falling back through CFBundleName to a hardcoded default.
     var displayName: String {
         object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
             ?? object(forInfoDictionaryKey: "CFBundleName") as? String
