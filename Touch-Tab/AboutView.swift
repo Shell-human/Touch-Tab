@@ -29,14 +29,18 @@ struct AboutView: View {
                 Text("Preferences")
                     .font(.system(size: 13, weight: .semibold))
                 
-                // Launch at Login Toggle
-                if #available(macOS 13.0, *) {
-                    Toggle("Launch at Login", isOn: $settings.isLaunchAtLoginEnabled)
+                // Toggle Options
+                VStack(alignment: .leading, spacing: 8) {
+                    if #available(macOS 13.0, *) {
+                        Toggle("Launch at Login", isOn: $settings.isLaunchAtLoginEnabled)
+                            .font(.system(size: 12))
+                    }
+                    Toggle("Show Icon in Menu Bar", isOn: $settings.showMenuBarIcon)
                         .font(.system(size: 12))
-                        .padding(.bottom, 4)
-                    
-                    Divider()
                 }
+                .padding(.bottom, 4)
+                
+                Divider()
                 
                 // Sensitivity Slider
                 VStack(alignment: .leading, spacing: 4) {

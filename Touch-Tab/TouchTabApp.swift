@@ -60,6 +60,7 @@ class PreferencesWindowController: NSObject {
             let w = NSWindow(contentViewController: controller)
             w.styleMask = [.closable, .titled]
             w.title = ""
+            w.isReleasedWhenClosed = false
             self.window = w
         }
         window?.center()
@@ -77,8 +78,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             SwipeManager.start()
         }
         
-        createStatusBarItem()
+        observeSettings()
         observeAppState()
+        updateStatusBarItemVisibility()
+        
+        // Auto-open Preferences on launch
+        openPreferences()
+    }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        openPreferences()
+        return true
     }
     
     private func observeAppState() {
@@ -92,24 +102,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    private func observeSettings() {
+        withObservationTracking {
+            _ = Settings.shared.showMenuBarIcon
+        } onChange: {
+            DispatchQueue.main.async {
+                self.updateStatusBarItemVisibility()
+                self.observeSettings()
+            }
+        }
+    }
+    
+    private func updateStatusBarItemVisibility() {
+        if Settings.shared.showMenuBarIcon {
+            if statusBarItem == nil {
+                createStatusBarItem()
+            }
+        } else {
+            if let item = statusBarItem {
+                NSStatusBar.system.removeStatusItem(item)
+                statusBarItem = nil
+            }
+        }
+    }
+    
     private func createStatusBarItem() {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusBarItem?.behavior = .removalAllowed
-        updateStatusIcon()
         
         let menu = NSMenu()
         statusBarItem?.menu = menu
-        rebuildMenu()
+        
+        updateStatusIcon()
     }
     
     private func updateStatusIcon() {
+        guard let item = statusBarItem else { return }
         let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
-        statusBarItem?.button?.image = NSImage(named: iconName)
+        item.button?.image = NSImage(named: iconName)
         rebuildMenu()
     }
     
     private func rebuildMenu() {
-        guard let menu = statusBarItem?.menu else { return }
+        guard let item = statusBarItem, let menu = item.menu else { return }
         menu.removeAllItems()
         
         if !AppState.shared.isTrusted {

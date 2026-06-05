@@ -237,15 +237,21 @@ class Settings {
         }
     }
 
+    var showMenuBarIcon: Bool {
+        didSet { UserDefaults.standard.set(showMenuBarIcon, forKey: "showMenuBarIcon") }
+    }
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "accVelXThreshold": Float(0.035),
             "appSwitcherUIDelay": Double(0.125),
-            "velocityMultiplier": Float(1.0)
+            "velocityMultiplier": Float(1.0),
+            "showMenuBarIcon": true
         ])
         self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
+        self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
         
         if #available(macOS 13.0, *) {
             self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
@@ -258,5 +264,6 @@ class Settings {
         accVelXThreshold = 0.035
         appSwitcherUIDelay = 0.125
         velocityMultiplier = 1.0
+        showMenuBarIcon = true
     }
 }
