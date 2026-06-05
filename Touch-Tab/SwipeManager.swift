@@ -251,7 +251,7 @@ class Settings {
     private init() {
         // Migrate velocityMultiplier to gestureAcceleration if needed BEFORE defaults are registered
         if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil {
-            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Double ?? DefaultSettings.gestureAcceleration
+            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") != nil ? UserDefaults.standard.double(forKey: "velocityMultiplier") : DefaultSettings.gestureAcceleration
             let inheritedVal = min(max(oldVal, 0.0), 5.0)
             self.gestureAcceleration = inheritedVal
             UserDefaults.standard.set(inheritedVal, forKey: "gestureAcceleration")
