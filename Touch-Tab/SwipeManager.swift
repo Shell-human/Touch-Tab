@@ -240,8 +240,8 @@ class Settings {
 
     private init() {
         UserDefaults.standard.register(defaults: [
-            "accVelXThreshold": Float(0.035),
-            "appSwitcherUIDelay": Double(0.125),
+            "accVelXThreshold": Float(0.045),
+            "appSwitcherUIDelay": Double(0.150),
             "velocityMultiplier": Float(1.0),
             "showMenuBarIcon": true
         ])
@@ -253,8 +253,8 @@ class Settings {
     }
 
     func resetToDefaults() {
-        accVelXThreshold = 0.035
-        appSwitcherUIDelay = 0.125
+        accVelXThreshold = 0.045
+        appSwitcherUIDelay = 0.150
         velocityMultiplier = 1.0
         showMenuBarIcon = true
     }
