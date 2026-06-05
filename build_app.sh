@@ -79,5 +79,19 @@ EOF
 echo "Signing the App Bundle..."
 codesign --force --sign - --entitlements Touch-Tab/Touch-Tab.entitlements build/Touch-Tab.app
 
-echo "=== Build Completed Successfully! ==="
-echo "App Bundle created at: $(pwd)/build/Touch-Tab.app"
+# 7. Package for Distribution (ZIP and DMG)
+echo "Packaging App for distribution..."
+# Create ZIP archive
+zip -q -r build/Touch-Tab.zip build/Touch-Tab.app
+
+# Create DMG Disk Image
+mkdir -p build/dmg_temp
+cp -R build/Touch-Tab.app build/dmg_temp/
+ln -s /Applications build/dmg_temp/Applications
+hdiutil create -volname "Touch-Tab" -srcfolder build/dmg_temp -ov -format UDZO build/Touch-Tab.dmg > /dev/null
+rm -rf build/dmg_temp
+
+echo "=== Build & Packaging Completed Successfully! ==="
+echo "App Bundle:     $(pwd)/build/Touch-Tab.app"
+echo "ZIP Archive:    $(pwd)/build/Touch-Tab.zip"
+echo "DMG Installer:  $(pwd)/build/Touch-Tab.dmg"
