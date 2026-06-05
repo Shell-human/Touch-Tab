@@ -8,12 +8,23 @@ rm -rf build
 mkdir -p build/Touch-Tab.app/Contents/MacOS
 mkdir -p build/Touch-Tab.app/Contents/Resources
 
-# 2. Compile the Swift files
-echo "Compiling Swift source files..."
-swiftc -o build/Touch-Tab.app/Contents/MacOS/Touch-Tab \
+# 2. Compile the Swift files (Universal Binary: arm64 + x86_64)
+echo "Compiling Swift source files for x86_64..."
+swiftc -target x86_64-apple-macosx12.0 -o build/Touch-Tab-x86_64 \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
+
+echo "Compiling Swift source files for arm64..."
+swiftc -target arm64-apple-macosx12.0 -o build/Touch-Tab-arm64 \
+    Touch-Tab/AboutView.swift \
+    Touch-Tab/SwipeManager.swift \
+    Touch-Tab/TouchTabApp.swift
+
+echo "Creating Universal Binary using lipo..."
+lipo -create build/Touch-Tab-x86_64 build/Touch-Tab-arm64 -output build/Touch-Tab.app/Contents/MacOS/Touch-Tab
+rm build/Touch-Tab-x86_64 build/Touch-Tab-arm64
+
 
 # 3. Copy resources (PNG assets mapped to standard macOS bundle naming)
 echo "Copying asset resources..."

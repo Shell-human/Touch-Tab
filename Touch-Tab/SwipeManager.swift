@@ -218,16 +218,20 @@ class Settings: ObservableObject {
 
     @Published var isLaunchAtLoginEnabled: Bool {
         didSet {
-            let service = SMAppService.mainApp
-            do {
-                if isLaunchAtLoginEnabled {
-                    if service.status != .enabled { try service.register() }
-                } else {
-                    if service.status == .enabled { try service.unregister() }
+            if #available(macOS 13.0, *) {
+                let service = SMAppService.mainApp
+                do {
+                    if isLaunchAtLoginEnabled {
+                        if service.status != .enabled { try service.register() }
+                    } else {
+                        if service.status == .enabled { try service.unregister() }
+                    }
+                } catch {
+                    debugPrint("Failed to set launch status: \(error)")
+                    isLaunchAtLoginEnabled = service.status == .enabled
                 }
-            } catch {
-                debugPrint("Failed to set launch status: \(error)")
-                isLaunchAtLoginEnabled = service.status == .enabled
+            } else {
+                debugPrint("SMAppService is only available on macOS 13.0 or newer")
             }
         }
     }
@@ -247,8 +251,14 @@ class Settings: ObservableObject {
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
-        self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
+        
+        if #available(macOS 13.0, *) {
+            self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
+        } else {
+            self.isLaunchAtLoginEnabled = false
+        }
     }
+
 
     func resetToDefaults() {
         accVelXThreshold = 0.045
