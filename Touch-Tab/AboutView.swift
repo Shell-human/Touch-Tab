@@ -16,7 +16,7 @@ struct AboutView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Bundle.main.displayName)
                         .font(.system(size: 15, weight: .bold))
-                    Text("Version \(Bundle.main.version) (\(Bundle.main.build))")
+                    Text("Version \(Bundle.main.version)")
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
@@ -158,8 +158,10 @@ struct AboutView: View {
                 // Reset Button
                 HStack {
                     Spacer()
-                    Button("Reset to Defaults") {
+                    Button(action: {
                         settings.resetToDefaults()
+                    }) {
+                        Label("Reset to Defaults", systemImage: "arrow.counterclockwise")
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .font(.system(size: 11))

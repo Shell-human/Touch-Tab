@@ -24,3 +24,4 @@
 "Accessibility Permission Required" = "Accessibility Permission Required";
 "Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings." = "Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings.";
 "Cancel" = "Cancel";
+"Version %@" = "Version %@";

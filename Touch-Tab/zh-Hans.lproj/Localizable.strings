@@ -24,3 +24,4 @@
 "Accessibility Permission Required" = "需要辅助功能权限";
 "Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings." = "Touch-Tab 需要“辅助功能”权限以监听触控板手势。请前往系统设置进行授权。";
 "Cancel" = "取消";
+"Version %@" = "版本 %@";
