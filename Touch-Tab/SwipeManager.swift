@@ -82,7 +82,6 @@ enum SwipeManager {
         }
     }
 
-    
     private static func eventHandler(_ eventType: CGEventType, cgEvent: CGEvent) -> Unmanaged<CGEvent>? {
         var swallow = false
         if eventType.rawValue == NSEvent.EventType.gesture.rawValue, let nsEvent = NSEvent(cgEvent: cgEvent) {
@@ -250,28 +249,29 @@ class Settings {
     }
 
     private init() {
-        // Migrate velocityMultiplier to gestureAcceleration if needed BEFORE defaults are registered
-        if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil {
-            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") != nil ? UserDefaults.standard.double(forKey: "velocityMultiplier") : DefaultSettings.gestureAcceleration
-            let inheritedVal = min(max(oldVal, 0.0), 5.0)
-            self.gestureAcceleration = inheritedVal
-            UserDefaults.standard.set(inheritedVal, forKey: "gestureAcceleration")
-        } else {
-            self.gestureAcceleration = UserDefaults.standard.double(forKey: "gestureAcceleration")
-        }
-
+        // 1. Register defaults first so all keys have a baseline
         UserDefaults.standard.register(defaults: [
             "accVelXThreshold": DefaultSettings.accVelXThreshold,
             "appSwitcherUIDelay": DefaultSettings.appSwitcherUIDelay,
             "gestureAcceleration": DefaultSettings.gestureAcceleration,
             "showMenuBarIcon": DefaultSettings.showMenuBarIcon
         ])
+
+        // 2. One-time migration: velocityMultiplier → gestureAcceleration
+        if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil,
+           let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Double {
+            let clamped = min(max(oldVal, 0.0), 5.0)
+            UserDefaults.standard.set(clamped, forKey: "gestureAcceleration")
+            UserDefaults.standard.removeObject(forKey: "velocityMultiplier")
+        }
+
+        // 3. Load persisted values
         self.accVelXThreshold = UserDefaults.standard.double(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
+        self.gestureAcceleration = UserDefaults.standard.double(forKey: "gestureAcceleration")
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
         self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
     }
-
 
     func resetToDefaults() {
         accVelXThreshold = DefaultSettings.accVelXThreshold

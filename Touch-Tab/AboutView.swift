@@ -57,14 +57,14 @@ struct AboutView: View {
                 
                 // Settings Sliders
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Preferences")
+                    Text(NSLocalizedString("Preferences", comment: ""))
                         .font(.system(size: 13, weight: .semibold))
                     
                     // Toggle Options
                     VStack(alignment: .leading, spacing: 8) {
-                        Toggle("Launch at Login", isOn: $settings.isLaunchAtLoginEnabled)
+                        Toggle(NSLocalizedString("Launch at Login", comment: ""), isOn: $settings.isLaunchAtLoginEnabled)
                             .font(.system(size: 12))
-                        Toggle("Show Icon in Menu Bar", isOn: $settings.showMenuBarIcon)
+                        Toggle(NSLocalizedString("Show Icon in Menu Bar", comment: ""), isOn: $settings.showMenuBarIcon)
                             .font(.system(size: 12))
                     }
                     .padding(.bottom, 4)
@@ -73,7 +73,7 @@ struct AboutView: View {
                     
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("Swipe Sensitivity")
+                            Text(NSLocalizedString("Swipe Sensitivity", comment: ""))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.3f", settings.accVelXThreshold))
@@ -86,11 +86,11 @@ struct AboutView: View {
                             step: 0.005
                         )
                         HStack {
-                            Text("Faster (0.01)")
+                            Text(NSLocalizedString("Faster (0.01)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text("Slower (0.08)")
+                            Text(NSLocalizedString("Slower (0.08)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -99,7 +99,7 @@ struct AboutView: View {
                     // Delay Slider
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("Switching Delay")
+                            Text(NSLocalizedString("Switching Delay", comment: ""))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.0f ms", settings.appSwitcherUIDelay * 1000))
@@ -112,11 +112,11 @@ struct AboutView: View {
                             step: 0.025
                         )
                         HStack {
-                            Text("Instant (0ms)")
+                            Text(NSLocalizedString("Instant (0ms)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text("Slower (300ms)")
+                            Text(NSLocalizedString("Slower (300ms)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -125,7 +125,7 @@ struct AboutView: View {
                     // Gesture Acceleration Slider
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("Gesture Acceleration")
+                            Text(NSLocalizedString("Gesture Acceleration", comment: ""))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.1fx", settings.gestureAcceleration))
@@ -138,11 +138,11 @@ struct AboutView: View {
                             step: 0.5
                         )
                         HStack {
-                            Text("Linear (0.0x)")
+                            Text(NSLocalizedString("Linear (0.0x)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text("Maximum (5.0x)")
+                            Text(NSLocalizedString("Maximum (5.0x)", comment: ""))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -154,7 +154,7 @@ struct AboutView: View {
                         Button(action: {
                             settings.resetToDefaults()
                         }) {
-                            Label("Reset to Defaults", systemImage: "arrow.counterclockwise")
+                            Label(NSLocalizedString("Reset to Defaults", comment: ""), systemImage: "arrow.counterclockwise")
                         }
                         .controlSize(.small)
                     }
@@ -166,7 +166,7 @@ struct AboutView: View {
                 // Footer
                 HStack {
                     Spacer()
-                    Button("Quit") {
+                    Button(NSLocalizedString("Quit", comment: "")) {
                         NSApplication.shared.terminate(nil)
                     }
                     .controlSize(.small)
@@ -177,4 +177,3 @@ struct AboutView: View {
         .frame(width: 320, height: appState.isTrusted ? 470 : 590)
     }
 }
-
