@@ -1,8 +1,8 @@
 # Touch-Tab
 
-Switch apps with trackpad on macOS. This is an enhanced, highly polished, and modernized version of the original Touch-Tab app.
+Switch apps with trackpad on macOS. This is an enhanced, highly polished, and modernized version of the original Touch-Tab app (forked from [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab)).
 
-在 macOS 上用触控板三指轻扫快速切换应用程序。此版本为精心重构与打磨后的现代化增强版。
+在 macOS 上用触控板三指轻扫快速切换应用程序。此版本为精心重构与打磨后的现代化增强版（Fork 自 [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab) 原版项目）。
 
 <p align="center">
   <img src="Preferences.png" width="350" alt="Touch-Tab Preferences View">
