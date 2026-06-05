@@ -205,6 +205,13 @@ enum SwipeManager {
     }
 }
 
+enum DefaultSettings {
+    static let accVelXThreshold: Double = 0.045
+    static let appSwitcherUIDelay: Double = 0.150
+    static let gestureAcceleration: Double = 1.0
+    static let showMenuBarIcon = true
+}
+
 @Observable
 class Settings {
     static let shared = Settings()
@@ -244,7 +251,7 @@ class Settings {
     private init() {
         // Migrate velocityMultiplier to gestureAcceleration if needed BEFORE defaults are registered
         if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil {
-            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Double ?? 1.0
+            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Double ?? DefaultSettings.gestureAcceleration
             let inheritedVal = min(max(oldVal, 0.0), 5.0)
             self.gestureAcceleration = inheritedVal
             UserDefaults.standard.set(inheritedVal, forKey: "gestureAcceleration")
@@ -253,10 +260,10 @@ class Settings {
         }
 
         UserDefaults.standard.register(defaults: [
-            "accVelXThreshold": Double(0.045),
-            "appSwitcherUIDelay": Double(0.150),
-            "gestureAcceleration": Double(1.0),
-            "showMenuBarIcon": true
+            "accVelXThreshold": DefaultSettings.accVelXThreshold,
+            "appSwitcherUIDelay": DefaultSettings.appSwitcherUIDelay,
+            "gestureAcceleration": DefaultSettings.gestureAcceleration,
+            "showMenuBarIcon": DefaultSettings.showMenuBarIcon
         ])
         self.accVelXThreshold = UserDefaults.standard.double(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
@@ -266,9 +273,9 @@ class Settings {
 
 
     func resetToDefaults() {
-        accVelXThreshold = 0.045
-        appSwitcherUIDelay = 0.150
-        gestureAcceleration = 1.0
-        showMenuBarIcon = true
+        accVelXThreshold = DefaultSettings.accVelXThreshold
+        appSwitcherUIDelay = DefaultSettings.appSwitcherUIDelay
+        gestureAcceleration = DefaultSettings.gestureAcceleration
+        showMenuBarIcon = DefaultSettings.showMenuBarIcon
     }
 }

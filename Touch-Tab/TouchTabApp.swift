@@ -31,24 +31,11 @@ class AppState {
     }
     
     private func isProcessTrustedWithPrompt() -> Bool {
-        let isAccessibilityPermissionGranted = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String : true] as CFDictionary)
-        if isAccessibilityPermissionGranted {
-            return true
-        } else {
-            // Trigger OS permission dialog from sandbox
-            _ = CGEvent.tapCreate(
-                tap: .cghidEventTap,
-                place: .headInsertEventTap,
-                options: .defaultTap,
-                eventsOfInterest: NSEvent.EventTypeMask.gesture.rawValue,
-                callback: { _, _, event, _ in Unmanaged.passUnretained(event) },
-                userInfo: nil
-            )
-            return false
-        }
+        return AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String : true] as CFDictionary)
     }
 }
 
+@MainActor
 class PreferencesWindowController: NSObject {
     static let shared = PreferencesWindowController()
     private var window: NSWindow?
