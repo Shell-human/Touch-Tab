@@ -92,7 +92,7 @@ class SwipeManager {
             return
         }
 
-        accVelX += velX!
+        accVelX += velX! * Settings.shared.velocityMultiplier
         // Not enough swiping.
         if abs(accVelX) < accVelXThreshold {
             return
@@ -202,12 +202,26 @@ class Settings: ObservableObject {
         }
     }
 
+    @Published var velocityMultiplier: Float {
+        didSet {
+            UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier")
+        }
+    }
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "accVelXThreshold": Float(0.035),
-            "appSwitcherUIDelay": Double(0.125)
+            "appSwitcherUIDelay": Double(0.125),
+            "velocityMultiplier": Float(1.0)
         ])
         self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
+        self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
+    }
+
+    func resetToDefaults() {
+        accVelXThreshold = 0.035
+        appSwitcherUIDelay = 0.125
+        velocityMultiplier = 1.0
     }
 }

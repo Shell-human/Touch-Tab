@@ -81,6 +81,46 @@ struct AboutView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                
+                // Velocity Multiplier Slider
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("Velocity Multiplier")
+                            .font(.system(size: 12))
+                        Spacer()
+                        Text(String(format: "%.1fx", settings.velocityMultiplier))
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(
+                        value: Binding(
+                            get: { Double(settings.velocityMultiplier) },
+                            set: { settings.velocityMultiplier = Float($0) }
+                        ),
+                        in: 1.0...10.0,
+                        step: 0.5
+                    )
+                    HStack {
+                        Text("Normal (1.0x)")
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("Maximum (10.0x)")
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                // Reset Button
+                HStack {
+                    Spacer()
+                    Button("Reset to Defaults") {
+                        settings.resetToDefaults()
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
+                    .font(.system(size: 11))
+                }
+                .padding(.top, 4)
             }
             
             Divider()
