@@ -141,11 +141,11 @@ struct AboutView: View {
                             get: { Double(settings.velocityMultiplier) },
                             set: { settings.velocityMultiplier = Float($0) }
                         ),
-                        in: 1.0...10.0,
-                        step: 0.5
+                        in: 0.1...10.0,
+                        step: 0.1
                     )
                     HStack {
-                        Text("Normal (1.0x)")
+                        Text("Minimum (0.1x)")
                             .font(.system(size: 9))
                             .foregroundColor(.secondary)
                         Spacer()
