@@ -89,7 +89,7 @@ cat << 'EOF' > build/Touch-Tab.app/Contents/Info.plist
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2024-2026 Shell-human. All rights reserved.</string>
+	<string>Copyright © 2020 ris58h, 2026 Shell-human. All rights reserved.</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon.icns</string>
 </dict>
