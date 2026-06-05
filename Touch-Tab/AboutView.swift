@@ -167,9 +167,6 @@ struct AboutView: View {
                 
                 // Footer
                 HStack {
-                    Text(Bundle.main.copyright)
-                        .font(.system(size: 10))
-                        .foregroundColor(.secondary)
                     Spacer()
                     Button("Quit") {
                         NSApplication.shared.terminate(nil)
@@ -179,7 +176,7 @@ struct AboutView: View {
             }
             .padding(20)
         }
-        .frame(width: 320, height: appState.isTrusted ? 500 : 590)
+        .frame(width: 320, height: appState.isTrusted ? 480 : 570)
     }
 }
 
