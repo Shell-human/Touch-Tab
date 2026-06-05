@@ -15,7 +15,7 @@ struct AboutView: View {
                     VStack(alignment: .center, spacing: 4) {
                         Text(Bundle.main.displayName)
                             .font(.system(size: 15, weight: .bold))
-                        Text("Version \(Bundle.main.version)")
+                        Text(String(format: NSLocalizedString("Version %@", comment: ""), Bundle.main.version))
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                     }
@@ -32,15 +32,15 @@ struct AboutView: View {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.orange)
                                 .imageScale(.small)
-                            Text("Accessibility Access Required")
+                            Text(NSLocalizedString("Accessibility Access Required", comment: ""))
                                 .font(.system(size: 11, weight: .bold))
                         }
-                        Text("Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.")
+                        Text(NSLocalizedString("Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.", comment: ""))
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
                             .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
-                        Button("Open System Settings") {
+                        Button(NSLocalizedString("Open System Settings", comment: "")) {
                             let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
                             NSWorkspace.shared.open(url)
                         }
@@ -178,8 +178,3 @@ struct AboutView: View {
     }
 }
 
-struct AboutView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutView()
-    }
-}
