@@ -6,21 +6,24 @@ import Observation
 class AppState {
     static let shared = AppState()
     var isTrusted = false
+    private var permissionTimer: Timer?
     
     private init() {
         isTrusted = AXIsProcessTrusted()
     }
     
     func requestPermission(completion: @escaping () -> Void) {
+        permissionTimer?.invalidate()
         if isProcessTrustedWithPrompt() {
             isTrusted = true
             completion()
         } else {
             isTrusted = false
-            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            permissionTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
                 if AXIsProcessTrusted() {
-                    self.isTrusted = true
+                    self?.isTrusted = true
                     timer.invalidate()
+                    self?.permissionTimer = nil
                     completion()
                 }
             }

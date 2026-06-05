@@ -29,11 +29,11 @@ enum AppSwitcher {
 }
 
 enum SwipeManager {
-    private static var accVelXThreshold: Float { Settings.shared.accVelXThreshold }
+    private static var accVelXThreshold: Double { Settings.shared.accVelXThreshold }
     private static var appSwitcherUIDelay: Double { Settings.shared.appSwitcherUIDelay }
 
     private static var eventTap: CFMachPort? = nil
-    private static var accVelX: Float = 0
+    private static var accVelX: Double = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
     private static var startTime: Date? = nil
 
@@ -119,10 +119,10 @@ enum SwipeManager {
             return false
         }
 
-        let speed = abs(velX)
+        let speed = Double(abs(velX))
         let accelFactor = Settings.shared.gestureAcceleration
         let dynamicMultiplier = 1.0 + (speed * 100.0 * accelFactor)
-        accVelX += velX * dynamicMultiplier
+        accVelX += Double(velX) * dynamicMultiplier
         if abs(accVelX) < accVelXThreshold {
             return true
         }
@@ -209,7 +209,7 @@ enum SwipeManager {
 class Settings {
     static let shared = Settings()
 
-    var accVelXThreshold: Float {
+    var accVelXThreshold: Double {
         didSet { UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold") }
     }
 
@@ -217,7 +217,7 @@ class Settings {
         didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
-    var gestureAcceleration: Float {
+    var gestureAcceleration: Double {
         didSet { UserDefaults.standard.set(gestureAcceleration, forKey: "gestureAcceleration") }
     }
 
@@ -242,25 +242,24 @@ class Settings {
     }
 
     private init() {
-        UserDefaults.standard.register(defaults: [
-            "accVelXThreshold": Float(0.045),
-            "appSwitcherUIDelay": Double(0.150),
-            "gestureAcceleration": Float(1.0),
-            "showMenuBarIcon": true
-        ])
-        self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
-        self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
-        
-        // Migrate velocityMultiplier to gestureAcceleration if needed
+        // Migrate velocityMultiplier to gestureAcceleration if needed BEFORE defaults are registered
         if UserDefaults.standard.object(forKey: "gestureAcceleration") == nil {
-            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Float ?? 1.0
+            let oldVal = UserDefaults.standard.object(forKey: "velocityMultiplier") as? Double ?? 1.0
             let inheritedVal = min(max(oldVal, 0.0), 5.0)
             self.gestureAcceleration = inheritedVal
             UserDefaults.standard.set(inheritedVal, forKey: "gestureAcceleration")
         } else {
-            self.gestureAcceleration = UserDefaults.standard.float(forKey: "gestureAcceleration")
+            self.gestureAcceleration = UserDefaults.standard.double(forKey: "gestureAcceleration")
         }
-        
+
+        UserDefaults.standard.register(defaults: [
+            "accVelXThreshold": Double(0.045),
+            "appSwitcherUIDelay": Double(0.150),
+            "gestureAcceleration": Double(1.0),
+            "showMenuBarIcon": true
+        ])
+        self.accVelXThreshold = UserDefaults.standard.double(forKey: "accVelXThreshold")
+        self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.showMenuBarIcon = UserDefaults.standard.bool(forKey: "showMenuBarIcon")
         self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
     }

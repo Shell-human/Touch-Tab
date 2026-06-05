@@ -71,7 +71,6 @@ struct AboutView: View {
                 
                 Divider()
                 
-                // Sensitivity Slider
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Text("Swipe Sensitivity")
@@ -82,10 +81,7 @@ struct AboutView: View {
                             .foregroundColor(.secondary)
                     }
                     Slider(
-                        value: Binding(
-                            get: { Double(settings.accVelXThreshold) },
-                            set: { settings.accVelXThreshold = Float($0) }
-                        ),
+                        value: $settings.accVelXThreshold,
                         in: 0.01...0.08,
                         step: 0.005
                     )
@@ -137,10 +133,7 @@ struct AboutView: View {
                             .foregroundColor(.secondary)
                     }
                     Slider(
-                        value: Binding(
-                            get: { Double(settings.gestureAcceleration) },
-                            set: { settings.gestureAcceleration = Float($0) }
-                        ),
+                        value: $settings.gestureAcceleration,
                         in: 0.0...5.0,
                         step: 0.5
                     )
