@@ -15,7 +15,7 @@ struct AboutView: View {
                     VStack(alignment: .center, spacing: 4) {
                         Text(Bundle.main.displayName)
                             .font(.system(size: 15, weight: .bold))
-                        Text(String(format: NSLocalizedString("Version %@", comment: ""), Bundle.main.version))
+                        Text(String(format: NSLocalizedString("Version %@", comment: "App version label, %@ is the version number"), Bundle.main.version))
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                     }
@@ -32,15 +32,15 @@ struct AboutView: View {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.orange)
                                 .imageScale(.small)
-                            Text(NSLocalizedString("Accessibility Access Required", comment: ""))
+                            Text(NSLocalizedString("Accessibility Access Required", comment: "Warning banner title when AX permission is missing"))
                                 .font(.system(size: 11, weight: .bold))
                         }
-                        Text(NSLocalizedString("Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.", comment: ""))
+                        Text(NSLocalizedString("Please authorize Touch-Tab in System Settings to enable trackpad gesture switching.", comment: "Warning banner description explaining how to grant permission"))
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
                             .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
-                        Button(NSLocalizedString("Open System Settings", comment: "")) {
+                        Button(NSLocalizedString("Open System Settings", comment: "Button to open System Settings > Accessibility")) {
                             let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
                             NSWorkspace.shared.open(url)
                         }
@@ -57,14 +57,14 @@ struct AboutView: View {
                 
                 // Settings Sliders
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(NSLocalizedString("Preferences", comment: ""))
+                    Text(NSLocalizedString("Preferences", comment: "Section title for the settings area"))
                         .font(.system(size: 13, weight: .semibold))
                     
                     // Toggle Options
                     VStack(alignment: .leading, spacing: 8) {
-                        Toggle(NSLocalizedString("Launch at Login", comment: ""), isOn: $settings.isLaunchAtLoginEnabled)
+                        Toggle(NSLocalizedString("Launch at Login", comment: "Toggle to enable/disable launch at login"), isOn: $settings.isLaunchAtLoginEnabled)
                             .font(.system(size: 12))
-                        Toggle(NSLocalizedString("Show Icon in Menu Bar", comment: ""), isOn: $settings.showMenuBarIcon)
+                        Toggle(NSLocalizedString("Show Icon in Menu Bar", comment: "Toggle to show/hide the status bar icon"), isOn: $settings.showMenuBarIcon)
                             .font(.system(size: 12))
                     }
                     .padding(.bottom, 4)
@@ -73,7 +73,7 @@ struct AboutView: View {
                     
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("Swipe Sensitivity", comment: ""))
+                            Text(NSLocalizedString("Swipe Sensitivity", comment: "Slider label for swipe trigger threshold"))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.3f", settings.accVelXThreshold))
@@ -86,11 +86,11 @@ struct AboutView: View {
                             step: 0.005
                         )
                         HStack {
-                            Text(NSLocalizedString("Faster (0.01)", comment: ""))
+                            Text(NSLocalizedString("Faster (0.01)", comment: "Slider min label: lower threshold = faster trigger"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text(NSLocalizedString("Slower (0.08)", comment: ""))
+                            Text(NSLocalizedString("Slower (0.08)", comment: "Slider max label: higher threshold = slower trigger"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -99,7 +99,7 @@ struct AboutView: View {
                     // Delay Slider
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("Switching Delay", comment: ""))
+                            Text(NSLocalizedString("Switching Delay", comment: "Slider label for debounce delay between switches"))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.0f ms", settings.appSwitcherUIDelay * 1000))
@@ -112,11 +112,11 @@ struct AboutView: View {
                             step: 0.025
                         )
                         HStack {
-                            Text(NSLocalizedString("Instant (0ms)", comment: ""))
+                            Text(NSLocalizedString("Instant (0ms)", comment: "Slider min label: no delay"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text(NSLocalizedString("Slower (300ms)", comment: ""))
+                            Text(NSLocalizedString("Slower (300ms)", comment: "Slider max label: 300ms delay"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -125,7 +125,7 @@ struct AboutView: View {
                     // Gesture Acceleration Slider
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("Gesture Acceleration", comment: ""))
+                            Text(NSLocalizedString("Gesture Acceleration", comment: "Slider label for dynamic swipe speed multiplier"))
                                 .font(.system(size: 12))
                             Spacer()
                             Text(String(format: "%.1fx", settings.gestureAcceleration))
@@ -138,11 +138,11 @@ struct AboutView: View {
                             step: 0.5
                         )
                         HStack {
-                            Text(NSLocalizedString("Linear (0.0x)", comment: ""))
+                            Text(NSLocalizedString("Linear (0.0x)", comment: "Slider min label: no acceleration"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text(NSLocalizedString("Maximum (5.0x)", comment: ""))
+                            Text(NSLocalizedString("Maximum (5.0x)", comment: "Slider max label: maximum acceleration"))
                                 .font(.system(size: 9))
                                 .foregroundColor(.secondary)
                         }
@@ -154,7 +154,7 @@ struct AboutView: View {
                         Button(action: {
                             settings.resetToDefaults()
                         }) {
-                            Label(NSLocalizedString("Reset to Defaults", comment: ""), systemImage: "arrow.counterclockwise")
+                            Label(NSLocalizedString("Reset to Defaults", comment: "Button to restore all settings to factory defaults"), systemImage: "arrow.counterclockwise")
                         }
                         .controlSize(.small)
                     }
@@ -166,7 +166,7 @@ struct AboutView: View {
                 // Footer
                 HStack {
                     Spacer()
-                    Button(NSLocalizedString("Quit", comment: "")) {
+                    Button(NSLocalizedString("Quit", comment: "Button to terminate the application")) {
                         NSApplication.shared.terminate(nil)
                     }
                     .controlSize(.small)
@@ -174,6 +174,8 @@ struct AboutView: View {
             }
             .padding(20)
         }
+        // Fixed dimensions sized for this utility panel's known content.
+        // 470pt fits all controls when AX is granted; 590pt adds room for the warning banner.
         .frame(width: 320, height: appState.isTrusted ? 470 : 590)
     }
 }

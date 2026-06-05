@@ -2,20 +2,26 @@ import Cocoa
 import Observation
 import ServiceManagement
 
+// MARK: - App Switcher (Keyboard Event Emitter)
+
+/// Emits synthetic Cmd+Tab / Cmd+Shift+Tab keyboard events to drive the macOS App Switcher.
 enum AppSwitcher {
     private static let keyboardEventSource = CGEventSource(stateID: .hidSystemState)
     private static let tabKey: CGKeyCode = 0x30
     private static let leftCommandKey: CGKeyCode = 0x37
 
+    /// Releases the Command key to confirm the current App Switcher selection.
     static func selectInAppSwitcher() {
         postKeyEvent(key: leftCommandKey, down: false)
     }
 
+    /// Sends Cmd+Tab to move forward in the App Switcher.
     static func cmdTab() {
         postKeyEvent(key: tabKey, down: true, flags: .maskCommand)
         postKeyEvent(key: tabKey, down: false, flags: .maskCommand)
     }
 
+    /// Sends Cmd+Shift+Tab to move backward in the App Switcher.
     static func cmdShiftTab() {
         postKeyEvent(key: tabKey, down: true, flags: [.maskCommand, .maskShift])
         postKeyEvent(key: tabKey, down: false, flags: [.maskCommand, .maskShift])
@@ -28,13 +34,23 @@ enum AppSwitcher {
     }
 }
 
+// MARK: - Swipe Manager (Gesture → App Switch)
+
+/// Intercepts 3-finger trackpad gestures via a CGEvent tap and translates them into App Switcher commands.
+///
+/// **Threading model**: The event tap callback runs on the same thread as the RunLoop it's attached to.
+/// `start()` is called from a Timer on the main RunLoop, so all callbacks execute on the main thread.
 enum SwipeManager {
+    /// Minimum accumulated velocity before a swipe triggers an app switch.
     private static var accVelXThreshold: Double { Settings.shared.accVelXThreshold }
+    /// Minimum time interval between consecutive app switches (debounce).
     private static var appSwitcherUIDelay: Double { Settings.shared.appSwitcherUIDelay }
 
     private static var eventTap: CFMachPort? = nil
+    /// Running sum of horizontal velocity, reset after each threshold crossing or finger-count change.
     private static var accVelX: Double = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
+    /// Timestamp of the first threshold crossing in the current gesture sequence.
     private static var startTime: Date? = nil
 
     static func start() {
@@ -67,11 +83,11 @@ enum SwipeManager {
     private static func showAccessibilityAlert() {
         DispatchQueue.main.async {
             let alert = NSAlert()
-            alert.messageText = NSLocalizedString("Accessibility Permission Required", comment: "")
-            alert.informativeText = NSLocalizedString("Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings.", comment: "")
+            alert.messageText = NSLocalizedString("Accessibility Permission Required", comment: "Alert title when event tap creation fails")
+            alert.informativeText = NSLocalizedString("Touch-Tab needs Accessibility permission to detect trackpad gestures. Please authorize it in System Settings.", comment: "Alert body explaining why AX permission is needed")
             alert.alertStyle = .warning
-            alert.addButton(withTitle: NSLocalizedString("Open System Settings", comment: ""))
-            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Open System Settings", comment: "Button to open System Settings > Accessibility"))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "Button to dismiss the alert"))
             
             let response = alert.runModal()
             if response == .alertFirstButtonReturn {
@@ -114,6 +130,8 @@ enum SwipeManager {
     }
 
     private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
+        updateTouchPositions(touches: touches)
+
         guard let velX = horizontalSwipeVelocity(touches: touches) else {
             return false
         }
@@ -165,6 +183,21 @@ enum SwipeManager {
         AppSwitcher.selectInAppSwitcher()
     }
 
+    // MARK: Touch Velocity Calculation
+
+    /// Records the current position of each active touch for velocity calculation on the next frame.
+    private static func updateTouchPositions(touches: Set<NSTouch>) {
+        for touch in touches {
+            if touch.phase == .ended {
+                prevTouchPositions.removeValue(forKey: "\(touch.identity)")
+            } else {
+                prevTouchPositions["\(touch.identity)"] = touch.normalizedPosition
+            }
+        }
+    }
+
+    /// Computes the average horizontal swipe velocity across all touches.
+    /// Returns `nil` if fingers are moving in different directions or if vertical movement dominates.
     private static func horizontalSwipeVelocity(touches: Set<NSTouch>) -> Float? {
         var allRight = true
         var allLeft = true
@@ -177,12 +210,6 @@ enum SwipeManager {
             allLeft = allLeft && velX <= 0
             sumVelX += velX
             sumVelY += velY
-
-            if touch.phase == .ended {
-                prevTouchPositions.removeValue(forKey: "\(touch.identity)")
-            } else {
-                prevTouchPositions["\(touch.identity)"] = touch.normalizedPosition
-            }
         }
         
         guard allRight || allLeft else { return nil }
@@ -194,6 +221,7 @@ enum SwipeManager {
         return velX
     }
     
+    /// Returns the per-frame velocity delta for a single touch by comparing against its previous position.
     private static func touchVelocity(_ touch: NSTouch) -> (Float, Float) {
         guard let prevPosition = prevTouchPositions["\(touch.identity)"] else {
             return (0, 0)
@@ -203,33 +231,46 @@ enum SwipeManager {
     }
 }
 
+// MARK: - Default Settings Constants
+
 enum DefaultSettings {
+    /// Default swipe sensitivity threshold (lower = more sensitive).
     static let accVelXThreshold: Double = 0.045
+    /// Default debounce delay between consecutive app switches.
     static let appSwitcherUIDelay: Double = 0.150
+    /// Default gesture acceleration factor (1.0 = moderate acceleration).
     static let gestureAcceleration: Double = 1.0
+    /// Whether the menu bar icon is visible by default.
     static let showMenuBarIcon = true
     /// Scales normalized touch velocity (~0.001–0.01/frame) into a perceivable acceleration range.
     static let accelSpeedScale: Double = 100.0
 }
 
+// MARK: - Persisted Settings
+
 @Observable
 class Settings {
     static let shared = Settings()
 
+    /// Minimum accumulated velocity to trigger an app switch. Lower = more sensitive.
     var accVelXThreshold: Double {
         didSet { UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold") }
     }
 
+    /// Debounce interval (seconds) between consecutive app switches.
     var appSwitcherUIDelay: Double {
         didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
+    /// Multiplier for dynamic gesture acceleration (0 = linear, higher = more aggressive).
     var gestureAcceleration: Double {
         didSet { UserDefaults.standard.set(gestureAcceleration, forKey: "gestureAcceleration") }
     }
 
+    /// Whether the app should launch automatically at login.
     var isLaunchAtLoginEnabled: Bool {
         didSet {
+            guard isLaunchAtLoginEnabled != oldValue else { return }
             let service = SMAppService.mainApp
             do {
                 if isLaunchAtLoginEnabled {
@@ -239,11 +280,16 @@ class Settings {
                 }
             } catch {
                 debugPrint("Failed to set launch status: \(error)")
-                isLaunchAtLoginEnabled = service.status == .enabled
+                // Sync back to the actual system state without re-triggering didSet.
+                let actual = service.status == .enabled
+                if actual != isLaunchAtLoginEnabled {
+                    isLaunchAtLoginEnabled = actual
+                }
             }
         }
     }
 
+    /// Whether the status bar icon is visible.
     var showMenuBarIcon: Bool {
         didSet { UserDefaults.standard.set(showMenuBarIcon, forKey: "showMenuBarIcon") }
     }
