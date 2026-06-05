@@ -1,11 +1,10 @@
 import Cocoa
 import SwiftUI
-import Observation
+import Combine
 
-@Observable
-class AppState {
+class AppState: ObservableObject {
     static let shared = AppState()
-    var isTrusted = false
+    @Published var isTrusted = false
     
     private init() {
         isTrusted = AXIsProcessTrusted()
@@ -68,14 +67,28 @@ class PreferencesWindowController: NSObject {
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarItem: NSStatusItem?
+    private var cancellables = Set<AnyCancellable>()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppState.shared.requestPermission {
             SwipeManager.start()
         }
         
-        observeSettings()
-        observeAppState()
+        // 使用 Combine 框架监听状态，支持低版本 macOS 系统运行
+        AppState.shared.$isTrusted
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateStatusIcon()
+            }
+            .store(in: &cancellables)
+            
+        Settings.shared.$showMenuBarIcon
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateStatusBarItemVisibility()
+            }
+            .store(in: &cancellables)
+            
         updateStatusBarItemVisibility()
         
         // Auto-open Preferences on launch
@@ -86,28 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         openPreferences()
         return true
     }
-    
-    private func observeAppState() {
-        withObservationTracking {
-            _ = AppState.shared.isTrusted
-        } onChange: {
-            DispatchQueue.main.async {
-                self.updateStatusIcon()
-                self.observeAppState()
-            }
-        }
-    }
-    
-    private func observeSettings() {
-        withObservationTracking {
-            _ = Settings.shared.showMenuBarIcon
-        } onChange: {
-            DispatchQueue.main.async {
-                self.updateStatusBarItemVisibility()
-                self.observeSettings()
-            }
-        }
-    }
+
     
     private func updateStatusBarItemVisibility() {
         if Settings.shared.showMenuBarIcon {

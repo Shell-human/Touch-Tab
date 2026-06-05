@@ -1,5 +1,4 @@
 import Cocoa
-import Observation
 import ServiceManagement
 
 enum AppSwitcher {
@@ -202,23 +201,22 @@ enum SwipeManager {
     }
 }
 
-@Observable
-class Settings {
+class Settings: ObservableObject {
     static let shared = Settings()
 
-    var accVelXThreshold: Float {
+    @Published var accVelXThreshold: Float {
         didSet { UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold") }
     }
 
-    var appSwitcherUIDelay: Double {
+    @Published var appSwitcherUIDelay: Double {
         didSet { UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay") }
     }
 
-    var velocityMultiplier: Float {
+    @Published var velocityMultiplier: Float {
         didSet { UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier") }
     }
 
-    var isLaunchAtLoginEnabled: Bool {
+    @Published var isLaunchAtLoginEnabled: Bool {
         didSet {
             let service = SMAppService.mainApp
             do {
@@ -234,7 +232,7 @@ class Settings {
         }
     }
 
-    var showMenuBarIcon: Bool {
+    @Published var showMenuBarIcon: Bool {
         didSet { UserDefaults.standard.set(showMenuBarIcon, forKey: "showMenuBarIcon") }
     }
 
