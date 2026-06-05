@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import ServiceManagement
 
 class SwipeManager {
     private static var accVelXThreshold: Float {
@@ -55,28 +56,34 @@ class SwipeManager {
     }
     
     private static func eventHandler(proxy: CGEventTapProxy, eventType: CGEventType, cgEvent: CGEvent, userInfo: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
+        var swallow = false
         if eventType.rawValue == NSEvent.EventType.gesture.rawValue, let nsEvent = NSEvent(cgEvent: cgEvent) {
-            touchEventHandler(nsEvent)
+            swallow = touchEventHandler(nsEvent)
         } else if (eventType == .tapDisabledByUserInput || eventType == .tapDisabledByTimeout) {
             debugPrint("SwipeManager tap disabled", eventType.rawValue)
             CGEvent.tapEnable(tap: eventTap!, enable: true)
         }
-        return Unmanaged.passUnretained(cgEvent)
+        return swallow ? nil : Unmanaged.passUnretained(cgEvent)
     }
     
-    private static func touchEventHandler(_ nsEvent: NSEvent) {
+    private static func touchEventHandler(_ nsEvent: NSEvent) -> Bool {
         let touches = nsEvent.allTouches()
 
         // Sometimes there are empty touch events that we have to skip. There are no empty touch events if Mission Control or App Expose use 3-finger swipes though.
         if touches.isEmpty {
-            return
+            return false
         }
         let touchesCount = touches.allSatisfy({ $0.phase == .ended }) ? 0 : touches.count
 
         switch touchesCount {
-        case 2: processTwoFingers()
-        case 3: processThreeFingers(touches: touches)
-        default: processOtherFingers()
+        case 2:
+            processTwoFingers()
+            return false
+        case 3:
+            return processThreeFingers(touches: touches)
+        default:
+            processOtherFingers()
+            return false
         }
     }
 
@@ -85,17 +92,17 @@ class SwipeManager {
         clearEventState()
     }
 
-    private static func processThreeFingers(touches: Set<NSTouch>) {
+    private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
         let velX = SwipeManager.horizontalSwipeVelocity(touches: touches)
         // We don't care about non-horizontal swipes.
         if velX == nil {
-            return
+            return false
         }
 
         accVelX += velX! * Settings.shared.velocityMultiplier
         // Not enough swiping.
         if abs(accVelX) < accVelXThreshold {
-            return
+            return true
         }
 
         if startTime == nil {
@@ -105,12 +112,13 @@ class SwipeManager {
             if -interval < appSwitcherUIDelay {
                 // We skip subsequent events until App Switcher UI is shown.
                 clearEventState()
-                return
+                return true
             }
         }
 
         startOrContinueGesture()
         clearEventState()
+        return true
     }
 
     private static func processOtherFingers() {
@@ -208,6 +216,27 @@ class Settings: ObservableObject {
         }
     }
 
+    @Published var isLaunchAtLoginEnabled: Bool {
+        didSet {
+            if #available(macOS 13.0, *) {
+                let service = SMAppService.mainApp
+                do {
+                    if isLaunchAtLoginEnabled {
+                        if service.status != .enabled {
+                            try service.register()
+                        }
+                    } else {
+                        if service.status == .enabled {
+                            try service.unregister()
+                        }
+                    }
+                } catch {
+                    debugPrint("Failed to set launch at login status: \(error)")
+                }
+            }
+        }
+    }
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "accVelXThreshold": Float(0.035),
@@ -217,6 +246,12 @@ class Settings: ObservableObject {
         self.accVelXThreshold = UserDefaults.standard.float(forKey: "accVelXThreshold")
         self.appSwitcherUIDelay = UserDefaults.standard.double(forKey: "appSwitcherUIDelay")
         self.velocityMultiplier = UserDefaults.standard.float(forKey: "velocityMultiplier")
+        
+        if #available(macOS 13.0, *) {
+            self.isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
+        } else {
+            self.isLaunchAtLoginEnabled = false
+        }
     }
 
     func resetToDefaults() {
