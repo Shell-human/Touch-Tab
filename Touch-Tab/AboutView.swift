@@ -9,18 +9,17 @@ struct AboutView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 16) {
 
-                // Header / App Info
-                HStack(alignment: .center, spacing: 16) {
-                    Image("AppIcon")
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                    VStack(alignment: .leading, spacing: 2) {
+                // Header / App Info (Centered)
+                HStack {
+                    Spacer()
+                    VStack(alignment: .center, spacing: 4) {
                         Text(Bundle.main.displayName)
                             .font(.system(size: 15, weight: .bold))
                         Text("Version \(Bundle.main.version)")
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                     }
+                    Spacer()
                 }
                 .padding(.bottom, 4)
                 
@@ -175,7 +174,7 @@ struct AboutView: View {
             }
             .padding(20)
         }
-        .frame(width: 320, height: appState.isTrusted ? 480 : 570)
+        .frame(width: 320, height: appState.isTrusted ? 510 : 610)
     }
 }
 
