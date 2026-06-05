@@ -157,8 +157,7 @@ struct AboutView: View {
                         }) {
                             Label("Reset to Defaults", systemImage: "arrow.counterclockwise")
                         }
-                        .buttonStyle(BorderlessButtonStyle())
-                        .font(.system(size: 11))
+                        .controlSize(.small)
                     }
                     .padding(.top, 4)
                 }
