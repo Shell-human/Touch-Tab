@@ -5,7 +5,7 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 在 macOS 上用触控板三指轻扫快速切换应用程序。基于原版的打磨增强版。
 
 <p align="center">
-  <img src="Preferences.png" width="320" alt="Touch-Tab Preferences View">
+  <img src="Preferences_v12.png" width="320" alt="Touch-Tab Preferences View">
 </p>
 
 ---
