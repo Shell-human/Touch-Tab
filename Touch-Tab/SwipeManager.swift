@@ -1,5 +1,5 @@
 import Cocoa
-import Combine
+import Observation
 import ServiceManagement
 
 class SwipeManager {
@@ -195,28 +195,29 @@ class SwipeManager {
     }
 }
 
-class Settings: ObservableObject {
+@Observable
+class Settings {
     static let shared = Settings()
 
-    @Published var accVelXThreshold: Float {
+    var accVelXThreshold: Float {
         didSet {
             UserDefaults.standard.set(accVelXThreshold, forKey: "accVelXThreshold")
         }
     }
 
-    @Published var appSwitcherUIDelay: Double {
+    var appSwitcherUIDelay: Double {
         didSet {
             UserDefaults.standard.set(appSwitcherUIDelay, forKey: "appSwitcherUIDelay")
         }
     }
 
-    @Published var velocityMultiplier: Float {
+    var velocityMultiplier: Float {
         didSet {
             UserDefaults.standard.set(velocityMultiplier, forKey: "velocityMultiplier")
         }
     }
 
-    @Published var isLaunchAtLoginEnabled: Bool {
+    var isLaunchAtLoginEnabled: Bool {
         didSet {
             if #available(macOS 13.0, *) {
                 let service = SMAppService.mainApp

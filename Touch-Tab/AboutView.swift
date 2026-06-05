@@ -1,9 +1,11 @@
 import SwiftUI
+import Observation
 
 struct AboutView: View {
-    @ObservedObject var settings = Settings.shared
+    @State private var settings = Settings.shared
     
     var body: some View {
+        @Bindable var settings = settings
         VStack(alignment: .leading, spacing: 16) {
             // Header / App Info
             HStack(alignment: .center, spacing: 16) {

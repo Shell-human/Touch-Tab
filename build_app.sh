@@ -12,12 +12,11 @@ mkdir -p build/Touch-Tab.app/Contents/Resources
 echo "Compiling Swift source files..."
 swiftc -o build/Touch-Tab.app/Contents/MacOS/Touch-Tab \
     Touch-Tab/AboutView.swift \
-    Touch-Tab/AppDelegate.swift \
     Touch-Tab/AppSwitcher.swift \
     Touch-Tab/BundleInfo.swift \
     Touch-Tab/PrivacyHelper.swift \
     Touch-Tab/SwipeManager.swift \
-    Touch-Tab/main.swift
+    Touch-Tab/TouchTabApp.swift
 
 # 3. Copy resources (PNG assets mapped to standard macOS bundle naming)
 echo "Copying asset resources..."
