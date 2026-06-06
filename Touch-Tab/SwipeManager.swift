@@ -256,11 +256,11 @@ enum DefaultSettings {
     /// Default debounce delay between consecutive app switches.
     static let appSwitcherUIDelay: Double = 0.150
     /// Default gesture acceleration factor (1.0 = moderate acceleration).
-    static let gestureAcceleration: Double = 0.5
+    static let gestureAcceleration: Double = 1.0
     /// Whether the menu bar icon is visible by default.
     static let showMenuBarIcon = true
     /// Scales normalized speed (units/second) into a perceivable acceleration range.
-    static let accelSpeedScale: Double = 0.83
+    static let accelSpeedScale: Double = 0.415
 }
 
 // MARK: - Persisted Settings
