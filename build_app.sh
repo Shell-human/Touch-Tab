@@ -28,8 +28,8 @@ rm build/Touch-Tab-x86_64 build/Touch-Tab-arm64
 
 # 3. Copy resources (PNG assets mapped to standard macOS bundle naming)
 echo "Copying asset resources..."
-cp Touch-Tab/Assets.xcassets/StatusIcon.imageset/StatusIcon_16x16.png build/Touch-Tab.app/Contents/Resources/StatusIcon.png
-cp Touch-Tab/Assets.xcassets/StatusIcon.imageset/StatusIcon_32x32.png build/Touch-Tab.app/Contents/Resources/StatusIcon@2x.png
+cp Touch-Tab/Assets.xcassets/StatusIcon.imageset/StatusIcon_22x22.png build/Touch-Tab.app/Contents/Resources/StatusIcon.png
+cp Touch-Tab/Assets.xcassets/StatusIcon.imageset/StatusIcon_44x44.png build/Touch-Tab.app/Contents/Resources/StatusIcon@2x.png
 
 cp Touch-Tab/Assets.xcassets/StatusIcon-Warning.imageset/StatusIcon-Warning_22x22.png build/Touch-Tab.app/Contents/Resources/StatusIcon-Warning.png
 cp Touch-Tab/Assets.xcassets/StatusIcon-Warning.imageset/StatusIcon-Warning_44x44.png build/Touch-Tab.app/Contents/Resources/StatusIcon-Warning@2x.png
@@ -75,7 +75,7 @@ cat << 'EOF' > build/Touch-Tab.app/Contents/Info.plist
 	<key>CFBundleExecutable</key>
 	<string>Touch-Tab</string>
 	<key>CFBundleIdentifier</key>
-	<string>shellhuman.Touch-Tab</string>
+	<string>shellhuman.TouchTab</string>
 	<key>CFBundleName</key>
 	<string>Touch-Tab</string>
 	<key>CFBundlePackageType</key>

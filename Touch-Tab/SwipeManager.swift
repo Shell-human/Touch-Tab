@@ -50,8 +50,10 @@ enum SwipeManager {
     /// Running sum of horizontal velocity, reset after each threshold crossing or finger-count change.
     private static var accVelX: Double = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
-    /// Timestamp of the initial app switch trigger in the current gesture sequence.
-    private static var initialTriggerTime: Date? = nil
+    /// Timestamp of the first threshold crossing in the current gesture sequence.
+    private static var startTime: Date? = nil
+    /// Timestamp of the last processed touch event for frame-rate independent velocity calculations.
+    private static var lastEventTimestamp: TimeInterval? = nil
 
     static func start() {
         guard eventTap == nil else {
@@ -122,21 +124,31 @@ enum SwipeManager {
             clearEventState()
             return false
         case 3:
-            return processThreeFingers(touches: touches)
+            return processThreeFingers(touches: touches, eventTimestamp: nsEvent.timestamp)
         default:
             processOtherFingers()
             return false
         }
     }
 
-    private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
+    private static func processThreeFingers(touches: Set<NSTouch>, eventTimestamp: TimeInterval) -> Bool {
         guard let velX = horizontalSwipeVelocity(touches: touches) else {
             updateTouchPositions(touches: touches)
             return false
         }
         updateTouchPositions(touches: touches)
 
-        let speed = Double(abs(velX))
+        // Calculate time delta since the last event to achieve frame-rate independence.
+        let dt: Double
+        if let lastTime = lastEventTimestamp {
+            dt = max(eventTimestamp - lastTime, 0.001) // Safeguard against division by zero
+        } else {
+            dt = 0.0166 // Assume standard 16.6ms (60Hz) frame interval for the first sample
+        }
+        lastEventTimestamp = eventTimestamp
+
+        // Calculate speed in normalized coordinate units per second (independent of frame rate).
+        let speed = Double(abs(velX)) / dt
         let accelFactor = Settings.shared.gestureAcceleration
         let dynamicMultiplier = 1.0 + (speed * DefaultSettings.accelSpeedScale * accelFactor)
         accVelX += Double(velX) * dynamicMultiplier
@@ -144,34 +156,36 @@ enum SwipeManager {
             return true
         }
 
-        if initialTriggerTime == nil {
-            initialTriggerTime = Date()
-        } else if let t = initialTriggerTime {
-            // Guard against subsequent triggers during the macOS App Switcher UI fade-in window.
-            // Once this initial delay passes and the panel is visible, we allow rapid, fluid switching
-            // without any debounce delay to match the physical swipe speed.
-            let elapsed = -t.timeIntervalSinceNow
-            if elapsed < appSwitcherUIDelay {
-                clearEventState()
+        if startTime == nil {
+            startTime = Date()
+        } else if let t = startTime {
+            let interval = -t.timeIntervalSinceNow
+            if interval < appSwitcherUIDelay {
+                resetAccumulator()
                 return true
             }
         }
 
         startOrContinueGesture()
-        clearEventState()
+        resetAccumulator()
         return true
     }
 
     private static func processOtherFingers() {
-        guard initialTriggerTime != nil else { return }
+        guard startTime != nil else { return }
         endGesture()
         clearEventState()
-        initialTriggerTime = nil
+        startTime = nil
+    }
+
+    private static func resetAccumulator() {
+        accVelX = 0
     }
 
     private static func clearEventState() {
         accVelX = 0
         prevTouchPositions.removeAll()
+        lastEventTimestamp = nil
     }
 
     private static func startOrContinueGesture() {
@@ -245,8 +259,8 @@ enum DefaultSettings {
     static let gestureAcceleration: Double = 1.0
     /// Whether the menu bar icon is visible by default.
     static let showMenuBarIcon = true
-    /// Scales normalized touch velocity (~0.001–0.01/frame) into a perceivable acceleration range.
-    static let accelSpeedScale: Double = 100.0
+    /// Scales normalized speed (units/second) into a perceivable acceleration range.
+    static let accelSpeedScale: Double = 0.29
 }
 
 // MARK: - Persisted Settings
