@@ -52,6 +52,8 @@ enum SwipeManager {
     private static var prevTouchPositions: [String: NSPoint] = [:]
     /// Timestamp of the first threshold crossing in the current gesture sequence.
     private static var startTime: Date? = nil
+    /// Timestamp of the last processed touch event for frame-rate independent velocity calculations.
+    private static var lastEventTimestamp: TimeInterval? = nil
 
     static func start() {
         guard eventTap == nil else {
@@ -122,21 +124,31 @@ enum SwipeManager {
             clearEventState()
             return false
         case 3:
-            return processThreeFingers(touches: touches)
+            return processThreeFingers(touches: touches, eventTimestamp: nsEvent.timestamp)
         default:
             processOtherFingers()
             return false
         }
     }
 
-    private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
+    private static func processThreeFingers(touches: Set<NSTouch>, eventTimestamp: TimeInterval) -> Bool {
         guard let velX = horizontalSwipeVelocity(touches: touches) else {
             updateTouchPositions(touches: touches)
             return false
         }
         updateTouchPositions(touches: touches)
 
-        let speed = Double(abs(velX))
+        // Calculate time delta since the last event to achieve frame-rate independence.
+        let dt: Double
+        if let lastTime = lastEventTimestamp {
+            dt = max(eventTimestamp - lastTime, 0.001) // Safeguard against division by zero
+        } else {
+            dt = 0.0166 // Assume standard 16.6ms (60Hz) frame interval for the first sample
+        }
+        lastEventTimestamp = eventTimestamp
+
+        // Calculate speed in normalized coordinate units per second (independent of frame rate).
+        let speed = Double(abs(velX)) / dt
         let accelFactor = Settings.shared.gestureAcceleration
         let dynamicMultiplier = 1.0 + (speed * DefaultSettings.accelSpeedScale * accelFactor)
         accVelX += Double(velX) * dynamicMultiplier
@@ -149,13 +161,13 @@ enum SwipeManager {
         } else if let t = startTime {
             let interval = -t.timeIntervalSinceNow
             if interval < appSwitcherUIDelay {
-                clearEventState()
+                resetAccumulator()
                 return true
             }
         }
 
         startOrContinueGesture()
-        clearEventState()
+        resetAccumulator()
         return true
     }
 
@@ -166,9 +178,14 @@ enum SwipeManager {
         startTime = nil
     }
 
+    private static func resetAccumulator() {
+        accVelX = 0
+    }
+
     private static func clearEventState() {
         accVelX = 0
         prevTouchPositions.removeAll()
+        lastEventTimestamp = nil
     }
 
     private static func startOrContinueGesture() {
@@ -242,8 +259,8 @@ enum DefaultSettings {
     static let gestureAcceleration: Double = 1.0
     /// Whether the menu bar icon is visible by default.
     static let showMenuBarIcon = true
-    /// Scales normalized touch velocity (~0.001–0.01/frame) into a perceivable acceleration range.
-    static let accelSpeedScale: Double = 100.0
+    /// Scales normalized speed (units/second) into a perceivable acceleration range.
+    static let accelSpeedScale: Double = 1.66
 }
 
 // MARK: - Persisted Settings

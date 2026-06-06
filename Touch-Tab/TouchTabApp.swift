@@ -130,7 +130,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func createStatusBarItem() {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusBarItem?.behavior = .removalAllowed
         
         let menu = NSMenu()
         statusBarItem?.menu = menu
