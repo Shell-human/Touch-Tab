@@ -47,6 +47,7 @@ enum SwipeManager {
     private static var appSwitcherUIDelay: Double { Settings.shared.appSwitcherUIDelay }
 
     private static var eventTap: CFMachPort? = nil
+    private static var watchdogTimer: Timer? = nil
     /// Running sum of horizontal velocity, reset after each threshold crossing or finger-count change.
     private static var accVelX: Double = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
@@ -80,6 +81,14 @@ enum SwipeManager {
         let runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
+        
+        // Start watchdog timer to automatically recover from Secure Input or timeout disabling the tap
+        watchdogTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+            if let tap = SwipeManager.eventTap, !CGEvent.tapIsEnabled(tap: tap) {
+                debugPrint("SwipeManager: Watchdog detected disabled event tap. Attempting to re-enable...")
+                CGEvent.tapEnable(tap: tap, enable: true)
+            }
+        }
     }
     
     private static func showAccessibilityAlert() {

@@ -93,9 +93,15 @@ cat << 'EOF' > build/Touch-Tab.app/Contents/Info.plist
 </plist>
 EOF
 
-# 6. Ad-hoc codesign the App Bundle
+# 6. Codesign the App Bundle
 echo "Signing the App Bundle..."
-codesign --force --sign - --entitlements Touch-Tab/Touch-Tab.entitlements build/Touch-Tab.app
+if [ -n "$DEVELOPER_ID" ]; then
+    echo "Using Developer ID: $DEVELOPER_ID"
+    codesign --force --options runtime --timestamp --sign "$DEVELOPER_ID" --entitlements Touch-Tab/Touch-Tab.entitlements build/Touch-Tab.app
+else
+    echo "No DEVELOPER_ID provided, falling back to ad-hoc signing..."
+    codesign --force --sign - --entitlements Touch-Tab/Touch-Tab.entitlements build/Touch-Tab.app
+fi
 
 # 7. Package for Distribution (ZIP and DMG)
 echo "Packaging App for distribution..."
@@ -109,7 +115,17 @@ ln -s /Applications build/dmg_temp/Applications
 hdiutil create -volname "Touch-Tab" -srcfolder build/dmg_temp -ov -format UDZO build/Touch-Tab.dmg > /dev/null
 rm -rf build/dmg_temp
 
-# 8. Post-build verification
+# 8. Notarize DMG (Optional)
+if [ -n "$APPLE_ID" ] && [ -n "$TEAM_ID" ] && [ -n "$APP_PASSWORD" ]; then
+    echo "Submitting DMG for notarization..."
+    xcrun notarytool submit build/Touch-Tab.dmg --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_PASSWORD" --wait
+    echo "Stapling notarization ticket to DMG..."
+    xcrun stapler staple build/Touch-Tab.dmg
+else
+    echo "Skipping notarization (APPLE_ID, TEAM_ID, or APP_PASSWORD not set)."
+fi
+
+# 9. Post-build verification
 echo "Verifying build artifacts..."
 FAIL=0
 
