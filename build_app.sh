@@ -75,7 +75,7 @@ cat << 'EOF' > build/Touch-Tab.app/Contents/Info.plist
 	<key>CFBundleExecutable</key>
 	<string>Touch-Tab</string>
 	<key>CFBundleIdentifier</key>
-	<string>shellhuman.Touch-Tab</string>
+	<string>shellhuman.TouchTab</string>
 	<key>CFBundleName</key>
 	<string>Touch-Tab</string>
 	<key>CFBundlePackageType</key>

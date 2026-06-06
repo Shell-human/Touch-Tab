@@ -140,7 +140,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateStatusIcon() {
         guard let item = statusBarItem else { return }
         let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
-        let image = NSImage(named: iconName)
+        
+        var image: NSImage? = nil
+        if let path = Bundle.main.path(forResource: iconName, ofType: "png") {
+            image = NSImage(contentsOfFile: path)
+        }
+        if image == nil {
+            image = NSImage(named: iconName)
+        }
+        
         if image == nil {
             debugPrint("Status bar icon image '\(iconName)' not found in bundle")
         }
