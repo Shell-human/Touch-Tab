@@ -144,6 +144,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if image == nil {
             debugPrint("Status bar icon image '\(iconName)' not found in bundle")
         }
+        image?.isTemplate = true
         item.button?.image = image
         rebuildMenu()
     }
