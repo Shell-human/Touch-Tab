@@ -182,6 +182,9 @@ enum SwipeManager {
         accVelX = 0
     }
 
+    /// Clears velocity and touch tracking data without resetting `startTime`.
+    /// `startTime` is intentionally preserved so that `processOtherFingers()` can
+    /// detect an in-progress gesture and release the Cmd key (3→2→0 finger path).
     private static func clearEventState() {
         accVelX = 0
         prevTouchPositions.removeAll()

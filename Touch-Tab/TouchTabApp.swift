@@ -153,8 +153,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func loadStatusBarIcon(named name: String, pointSize: CGFloat) -> NSImage? {
-        if let img = NSImage(named: name) {
-            let copied = img.copy() as! NSImage
+        if let img = NSImage(named: name),
+           let copied = img.copy() as? NSImage {
             copied.size = NSSize(width: pointSize, height: pointSize)
             return copied
         }

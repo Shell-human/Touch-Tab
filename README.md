@@ -5,7 +5,7 @@ Switch apps with trackpad on macOS. Forked from [ris58h/Touch-Tab](https://githu
 在 macOS 上通过触控板三指轻扫切换应用。基于原版的改进版本。
 
 <p align="center">
-  <img src="Preferences_v13.png" width="320" alt="Touch-Tab Preferences View">
+  <img src="Preferences.png" width="320" alt="Touch-Tab Preferences">
 </p>
 
 ---

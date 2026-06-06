@@ -10,13 +10,13 @@ mkdir -p build/Touch-Tab.app/Contents/Resources
 
 # 2. Compile the Swift files (Universal Binary: arm64 + x86_64)
 echo "Compiling Swift source files for x86_64..."
-swiftc -target x86_64-apple-macosx14.0 -o build/Touch-Tab-x86_64 \
+swiftc -warnings-as-errors -target x86_64-apple-macosx14.0 -o build/Touch-Tab-x86_64 \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
 
 echo "Compiling Swift source files for arm64..."
-swiftc -target arm64-apple-macosx14.0 -o build/Touch-Tab-arm64 \
+swiftc -warnings-as-errors -target arm64-apple-macosx14.0 -o build/Touch-Tab-arm64 \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
@@ -34,9 +34,6 @@ cp Touch-Tab/Assets.xcassets/StatusIcon.imageset/StatusIcon_44x44.png build/Touc
 cp Touch-Tab/Assets.xcassets/StatusIcon-Warning.imageset/StatusIcon-Warning_22x22.png build/Touch-Tab.app/Contents/Resources/StatusIcon-Warning.png
 cp Touch-Tab/Assets.xcassets/StatusIcon-Warning.imageset/StatusIcon-Warning_44x44.png build/Touch-Tab.app/Contents/Resources/StatusIcon-Warning@2x.png
 
-cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_16x16.png build/Touch-Tab.app/Contents/Resources/MenuItem-Warning.png
-cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_32x32.png build/Touch-Tab.app/Contents/Resources/MenuItem-Warning@2x.png
-cp Touch-Tab/Assets.xcassets/MenuItem-Warning.imageset/MenuItem-Warning_48x48.png build/Touch-Tab.app/Contents/Resources/MenuItem-Warning@3x.png
 
 echo "Copying localization resources..."
 mkdir -p build/Touch-Tab.app/Contents/Resources/en.lproj
@@ -111,6 +108,41 @@ cp -R build/Touch-Tab.app build/dmg_temp/
 ln -s /Applications build/dmg_temp/Applications
 hdiutil create -volname "Touch-Tab" -srcfolder build/dmg_temp -ov -format UDZO build/Touch-Tab.dmg > /dev/null
 rm -rf build/dmg_temp
+
+# 8. Post-build verification
+echo "Verifying build artifacts..."
+FAIL=0
+
+# Check required resources exist in bundle
+for f in StatusIcon.png StatusIcon@2x.png StatusIcon-Warning.png StatusIcon-Warning@2x.png AppIcon.icns en.lproj/Localizable.strings zh-Hans.lproj/Localizable.strings; do
+    if [ ! -f "build/Touch-Tab.app/Contents/Resources/$f" ]; then
+        echo "  MISSING: Resources/$f"
+        FAIL=1
+    fi
+done
+if [ ! -f "build/Touch-Tab.app/Contents/Info.plist" ]; then
+    echo "  MISSING: Info.plist"
+    FAIL=1
+fi
+
+# Verify codesign
+if ! codesign --verify --strict build/Touch-Tab.app 2>/dev/null; then
+    echo "  FAIL: codesign verification failed"
+    FAIL=1
+fi
+
+# Verify universal binary architectures
+ARCHS=$(lipo -info build/Touch-Tab.app/Contents/MacOS/Touch-Tab 2>/dev/null)
+if ! echo "$ARCHS" | grep -q "x86_64" || ! echo "$ARCHS" | grep -q "arm64"; then
+    echo "  FAIL: not a universal binary ($ARCHS)"
+    FAIL=1
+fi
+
+if [ $FAIL -ne 0 ]; then
+    echo "=== Build verification FAILED ==="
+    exit 1
+fi
+echo "  All checks passed."
 
 echo "=== Build & Packaging Completed Successfully! ==="
 echo "App Bundle:     $(pwd)/build/Touch-Tab.app"
