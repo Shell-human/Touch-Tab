@@ -1,6 +1,6 @@
 # Touch-Tab
 
-Switch apps with trackpad on macOS. Forked from [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab) with improvements.
+Switch non-full-screen apps with trackpad on macOS. Forked from [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab) with improvements.
 
 在 macOS 上通过触控板三指轻扫切换应用。基于原版的改进版本。
 
