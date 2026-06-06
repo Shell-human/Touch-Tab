@@ -144,14 +144,15 @@ enum SwipeManager {
             return true
         }
 
-        if let t = startTime {
+        if startTime == nil {
+            startTime = Date()
+        } else if let t = startTime {
             let interval = -t.timeIntervalSinceNow
             if interval < appSwitcherUIDelay {
                 clearEventState()
                 return true
             }
         }
-        startTime = Date()
 
         startOrContinueGesture()
         clearEventState()
