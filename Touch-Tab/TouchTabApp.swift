@@ -139,22 +139,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func updateStatusIcon() {
         guard let item = statusBarItem else { return }
-        let iconName = AppState.shared.isTrusted ? "StatusIcon" : "StatusIcon-Warning"
+        let isTrusted = AppState.shared.isTrusted
+        let iconName = isTrusted ? "StatusIcon" : "StatusIcon-Warning"
+        let pointSize: CGFloat = isTrusted ? 16 : 22
         
-        var image: NSImage? = nil
-        if let path = Bundle.main.path(forResource: iconName, ofType: "png") {
-            image = NSImage(contentsOfFile: path)
-        }
-        if image == nil {
-            image = NSImage(named: iconName)
-        }
-        
+        let image = loadStatusBarIcon(named: iconName, pointSize: pointSize)
         if image == nil {
             debugPrint("Status bar icon image '\(iconName)' not found in bundle")
         }
         image?.isTemplate = true
         item.button?.image = image
         rebuildMenu()
+    }
+    
+    private func loadStatusBarIcon(named name: String, pointSize: CGFloat) -> NSImage? {
+        let image = NSImage(size: NSSize(width: pointSize, height: pointSize))
+        
+        // Load 1x representation
+        if let path1x = Bundle.main.path(forResource: name, ofType: "png"),
+           let img1x = NSImage(contentsOfFile: path1x),
+           let rep1x = img1x.representations.first {
+            rep1x.size = NSSize(width: pointSize, height: pointSize)
+            image.addRepresentation(rep1x)
+        }
+        
+        // Load 2x representation
+        let name2x = name + "@2x"
+        if let path2x = Bundle.main.path(forResource: name2x, ofType: "png"),
+           let img2x = NSImage(contentsOfFile: path2x),
+           let rep2x = img2x.representations.first {
+            rep2x.size = NSSize(width: pointSize, height: pointSize)
+            image.addRepresentation(rep2x)
+        }
+        
+        if image.representations.isEmpty {
+            return NSImage(named: name)
+        }
+        
+        return image
     }
     
     private func rebuildMenu() {
