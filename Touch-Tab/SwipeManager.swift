@@ -130,11 +130,11 @@ enum SwipeManager {
     }
 
     private static func processThreeFingers(touches: Set<NSTouch>) -> Bool {
-        updateTouchPositions(touches: touches)
-
         guard let velX = horizontalSwipeVelocity(touches: touches) else {
+            updateTouchPositions(touches: touches)
             return false
         }
+        updateTouchPositions(touches: touches)
 
         let speed = Double(abs(velX))
         let accelFactor = Settings.shared.gestureAcceleration
