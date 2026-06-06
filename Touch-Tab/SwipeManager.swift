@@ -50,8 +50,8 @@ enum SwipeManager {
     /// Running sum of horizontal velocity, reset after each threshold crossing or finger-count change.
     private static var accVelX: Double = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
-    /// Timestamp of the first threshold crossing in the current gesture sequence.
-    private static var startTime: Date? = nil
+    /// Timestamp of the initial app switch trigger in the current gesture sequence.
+    private static var initialTriggerTime: Date? = nil
 
     static func start() {
         guard eventTap == nil else {
@@ -144,11 +144,14 @@ enum SwipeManager {
             return true
         }
 
-        if startTime == nil {
-            startTime = Date()
-        } else if let t = startTime {
-            let interval = -t.timeIntervalSinceNow
-            if interval < appSwitcherUIDelay {
+        if initialTriggerTime == nil {
+            initialTriggerTime = Date()
+        } else if let t = initialTriggerTime {
+            // Guard against subsequent triggers during the macOS App Switcher UI fade-in window.
+            // Once this initial delay passes and the panel is visible, we allow rapid, fluid switching
+            // without any debounce delay to match the physical swipe speed.
+            let elapsed = -t.timeIntervalSinceNow
+            if elapsed < appSwitcherUIDelay {
                 clearEventState()
                 return true
             }
@@ -160,10 +163,10 @@ enum SwipeManager {
     }
 
     private static func processOtherFingers() {
-        guard startTime != nil else { return }
+        guard initialTriggerTime != nil else { return }
         endGesture()
         clearEventState()
-        startTime = nil
+        initialTriggerTime = nil
     }
 
     private static func clearEventState() {
