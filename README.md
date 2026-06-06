@@ -1,8 +1,8 @@
 # Touch-Tab
 
-Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (forked from [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab)).
+Switch apps with trackpad on macOS. Forked from [ris58h/Touch-Tab](https://github.com/ris58h/Touch-Tab) with improvements.
 
-在 macOS 上用触控板三指轻扫快速切换应用程序。基于原版的打磨增强版。
+在 macOS 上通过触控板三指轻扫切换应用。基于原版的改进版本。
 
 <p align="center">
   <img src="Preferences_v13.png" width="320" alt="Touch-Tab Preferences View">
@@ -12,35 +12,35 @@ Switch apps with trackpad on macOS. Enhanced version of the original Touch-Tab (
 
 ## 🇨🇳 中文说明
 
-### 🌟 核心功能
-* **三指轻扫切换**：用三指水平左右轻扫快速切换应用，慢滑或按住可呼出 App 切换器窗口（App Switcher）。
-* **自定义设置**：在首选项中自由调节滑动灵敏度、触发延迟与手势加速度，调配出最适合您的丝滑手势。
-* **背景滚动拦截**：吞除轻扫时的滚动事件，彻底解决原版中切换应用时导致的后台窗口页面跟着滚动的烦人 Bug。
-* **状态栏图标隐藏**：支持在首选项中隐藏菜单栏图标，隐藏后程序在后台静默且常驻运行。
-* **开机自启动**：在首选项中一键开启/关闭开机自启。
+### 🌟 功能特点
+* **三指轻扫切换**：三指左右轻扫切换应用，轻扫并按住可呼出系统应用切换器（App Switcher）窗口。
+* **参数自定义**：支持在首选项中调节轻扫灵敏度、延迟与手势加速度，以适配个人使用习惯。
+* **滚动拦截**：在轻扫切换应用时，拦截发送给后台窗口的滚动事件，避免导致后台窗口内容意外滚动。
+* **状态栏图标隐藏**：支持隐藏菜单栏图标，隐藏后应用在后台运行。
+* **开机自启动**：支持在首选项中开启或关闭开机自启。
 
 ### 📦 下载与安装
 
 > [!IMPORTANT]
-> **最低系统要求**：本版本基于 Swift 6 与 Observation 框架重构，仅支持 **macOS 14.0 (Sonoma) 及以上系统**。
+> **系统要求**：本版本基于 Swift 6 与 Observation 框架，仅支持 **macOS 14.0 (Sonoma) 及以上系统**。
 > 
-> **⚠️ 关键必看配置**：在运行本软件前， **必须先将系统默认的三指轻扫改掉或关闭** 。请打开 `系统设置 > 触控板 > 更多手势 > 在全屏幕应用之间轻扫`，将其 **关闭** 或改为 **“四指轻扫”** 。否则系统的三指左右手势会霸占系统权限，导致软件的三指手势失效或冲突。
+> **⚠️ 触控板设置**：运行本应用前，**需关闭或更改 macOS 默认的三指轻扫手势**。请前往 `系统设置 > 触控板 > 更多手势 > 在全屏幕应用之间轻扫`，将其关闭或改为“四指轻扫”。否则系统默认手势会占用三指事件，导致本应用的手势失效。
 
-1. **下载安装包**：前往 [Releases 页面](https://github.com/Shell-human/Touch-Tab/releases) 下载最新的 **`Touch-Tab.dmg`**。
-2. **快速安装**：双击打开 `.dmg` 镜像，将 **Touch-Tab** 拖入 **Applications**（应用程序）文件夹中运行。
+1. **下载**：前往 [Releases 页面](https://github.com/Shell-human/Touch-Tab/releases) 下载最新的 **`Touch-Tab.dmg`**。
+2. **安装**：双击 `.dmg` 文件，将 **Touch-Tab** 拖入 **Applications**（应用程序）文件夹。
 3. **系统权限配置**：
-   * **辅助功能 (Accessibility)**：打开 `系统设置 > 隐私与安全性 > 辅助功能`，勾选允许 **Touch-Tab** 控制电脑。
-   * **⚠️ 三指拖移 (Three Finger Drag)**：如果您在 `系统设置 > 辅助功能 > 指针控制 > 触控板选项` 中启用了“使用触控板进行拖移”并选择为 **“三指拖移”**，请 **务必将其关闭**（或改为其他非三指拖移方式）。否则，您的三指滑动会被系统优先识别为拖拽窗口或选择文本，与本软件的三指手势产生严重冲突。
+   * **辅助功能权限**：前往 `系统设置 > 隐私与安全性 > 辅助功能`，开启 **Touch-Tab** 的权限。
+   * **⚠️ 三指拖移**：若在 `系统设置 > 辅助功能 > 指针控制 > 触控板选项` 中启用了“三指拖移”，**需将其关闭**（或更改为其他拖移方式）。否则三指滑动会被系统优先识别为窗口拖拽或文本选择，与本应用的手势冲突。
 
-### 💡 使用贴士
+### 💡 使用提示
 > [!TIP]
-> **重新安装/升级注意**：如果您之前安装过 Touch-Tab，重新安装或更新版本后可能会出现手势失效的情况。请在 `系统设置 > 隐私与安全性 > 辅助功能` 的列表中，先选中老的 Touch-Tab 并点击列表下方的 **`-` (减号)** 将其移除，然后再点击 **`+` (加号)** 重新将新版 Touch-Tab 添加进来并开启授权。
+> **版本升级/重新安装**：若更新版本后手势失效，请前往 `系统设置 > 隐私与安全性 > 辅助功能`，在列表中选中 **Touch-Tab** 并点击底部的 **`-` (减号)** 将其移除，然后点击 **`+` (加号)** 重新添加新版 Touch-Tab 并开启授权。
 
 > [!NOTE]
-> **如何恢复菜单栏图标**：如果您在首选项中隐藏了菜单栏图标，只需在「应用程序」文件夹（或通过 Spotlight / Launchpad）**再次双击运行 Touch-Tab**，即可重新调出首选项窗口将其勾选回来。
+> **重新显示菜单栏图标**：若已在首选项中隐藏菜单栏图标，从应用程序文件夹或通过 Launchpad / Spotlight **再次运行 Touch-Tab** 即可重新打开首选项窗口。
 
 ### 🛠 编译开发
-如果您想自行编译：
+若需自行编译：
 ```bash
 chmod +x build_app.sh
 ./build_app.sh
@@ -51,32 +51,32 @@ chmod +x build_app.sh
 
 ## 🇺🇸 English Guide
 
-### 🌟 Key Features
-* **3-Finger Swipe**: Swipe left/right with 3 fingers to switch apps; hold or swipe slowly to show the macOS App Switcher UI.
-* **Custom Settings**: Adjust swipe sensitivity, trigger delay, and gesture acceleration in Preferences to achieve a smooth and personalized gesture experience.
-* **Background Scroll Guard**: Swallows horizontal 3-finger swipe events, fixing the bug in the original app where background window content scrolled during app switching.
-* **Hide Menu Bar Icon**: Toggle the status bar icon visibility in Preferences; if hidden, the application runs silently and persistently in the background.
-* **Launch at Login**: Easily enable or disable autostart directly from the Preferences window.
+### 🌟 Features
+* **3-Finger Swipe**: Swipe left or right with three fingers to switch apps; swipe and hold to display the macOS App Switcher UI.
+* **Custom Settings**: Adjust swipe sensitivity, delay, and gesture acceleration in Preferences to match your preference.
+* **Background Scroll Interception**: Intercepts scroll events during application switching to prevent background window content from scrolling.
+* **Hide Menu Bar Icon**: Toggle the visibility of the status bar icon; when hidden, the application runs in the background.
+* **Launch at Login**: Enable or disable autostart directly from the Preferences window.
 
 ### 📦 Download & Installation
 
 > [!IMPORTANT]
-> **System Requirements**: This version is built with Swift 6 and the Observation framework, supporting only **macOS 14.0 (Sonoma) or newer**.
+> **System Requirements**: This version requires **macOS 14.0 (Sonoma) or newer**.
 > 
-> **⚠️ Critical Configuration**: Before launching the application, you **MUST disable or change the system default 3-finger swipe gesture**. Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps`, and **disable** it or change it to **"Swipe with four fingers"**. Otherwise, the default system gesture will block Touch-Tab, causing the 3-finger swipe to fail.
+> **⚠️ Trackpad Settings**: Before running the application, you **must disable or modify the system default 3-finger swipe gesture**. Open `System Settings > Trackpad > More Gestures > Swipe between full-screen apps`, and disable it or change it to "Swipe with four fingers". Otherwise, the default system gesture will intercept the swipe, causing Touch-Tab to fail.
 
 1. **Download**: Go to the [Releases page](https://github.com/Shell-human/Touch-Tab/releases) and download the latest **`Touch-Tab.dmg`**.
 2. **Install**: Double-click the `.dmg` file and drag **Touch-Tab** into your **Applications** folder.
 3. **System Configuration**:
    * **Accessibility**: Open `System Settings > Privacy & Security > Accessibility` and authorize **Touch-Tab**.
-   * **⚠️ Three Finger Drag**: If you have enabled "Use trackpad for dragging" with **"Three Finger Drag"** under `System Settings > Accessibility > Pointer Control > Trackpad Options`, you **must disable it** (or change it to another style). Otherwise, your three-finger swipes will be captured by the system for window dragging or text selection, conflicting directly with Touch-Tab.
+   * **⚠️ Three-Finger Drag**: If you have enabled "Three Finger Drag" under `System Settings > Accessibility > Pointer Control > Trackpad Options`, you **must disable it** (or change it to another setting). Otherwise, three-finger swipes will be captured for window dragging or text selection, conflicting with Touch-Tab.
 
-### 💡 Useful Tips
+### 💡 Tips
 > [!TIP]
-> **Reinstallation / Upgrade Warning**: If you have previously installed Touch-Tab, you might experience issues where gestures don't work after upgrading. To fix this, go to `System Settings > Privacy & Security > Accessibility`, select the old Touch-Tab entry, click the **`-` (minus)** button to remove it completely, then click the **`+` (plus)** button to re-add the new Touch-Tab application and enable its permission.
+> **Reinstallation / Upgrade**: If gestures do not work after upgrading, go to `System Settings > Privacy & Security > Accessibility`, select the old **Touch-Tab** entry, click the **`-` (minus)** button to remove it, and click the **`+` (plus)** button to re-add the new Touch-Tab application.
 
 > [!NOTE]
-> **How to Restore the Menu Bar Icon**: If you hid the menu bar status icon in Preferences, simply **re-launch the Touch-Tab application** from your Applications folder (or via Spotlight / Launchpad) to reopen the Preferences window and check the toggle again.
+> **Restore Menu Bar Icon**: If you hid the menu bar icon, **re-launch Touch-Tab** from your Applications folder or via Launchpad / Spotlight to reopen the Preferences window.
 
 ### 🛠 Compilation
 To build the application manually:
