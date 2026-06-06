@@ -260,7 +260,7 @@ enum DefaultSettings {
     /// Whether the menu bar icon is visible by default.
     static let showMenuBarIcon = true
     /// Scales normalized speed (units/second) into a perceivable acceleration range.
-    static let accelSpeedScale: Double = 1.66
+    static let accelSpeedScale: Double = 0.83
 }
 
 // MARK: - Persisted Settings
