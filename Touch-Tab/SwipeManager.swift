@@ -39,7 +39,8 @@ enum AppSwitcher {
 /// Intercepts 3-finger trackpad gestures via a CGEvent tap and translates them into App Switcher commands.
 ///
 /// **Threading model**: The event tap callback runs on the same thread as the RunLoop it's attached to.
-/// `start()` is called from a Timer on the main RunLoop, so all callbacks execute on the main thread.
+/// `start()` is called from the main thread (during application startup or when accessibility permission is granted),
+/// so all callbacks execute on the main thread.
 enum SwipeManager {
     /// Minimum accumulated velocity before a swipe triggers an app switch.
     private static var accVelXThreshold: Double { Settings.shared.accVelXThreshold }
@@ -49,7 +50,7 @@ enum SwipeManager {
     private static var eventTap: CFMachPort? = nil
     /// Running sum of horizontal velocity, reset after each threshold crossing or finger-count change.
     private static var accVelX: Double = 0
-    private static var prevTouchPositions: [String: NSPoint] = [:]
+    private static var prevTouchPositions: [AnyHashable: NSPoint] = [:]
     /// Timestamp of the first threshold crossing in the current gesture sequence.
     private static var startTime: Date? = nil
     /// Timestamp of the last processed touch event for frame-rate independent velocity calculations.
@@ -208,10 +209,11 @@ enum SwipeManager {
     /// Records the current position of each active touch for velocity calculation on the next frame.
     private static func updateTouchPositions(touches: Set<NSTouch>) {
         for touch in touches {
+            let key = touch.identity as! AnyHashable
             if touch.phase == .ended {
-                prevTouchPositions.removeValue(forKey: "\(touch.identity)")
+                prevTouchPositions.removeValue(forKey: key)
             } else {
-                prevTouchPositions["\(touch.identity)"] = touch.normalizedPosition
+                prevTouchPositions[key] = touch.normalizedPosition
             }
         }
     }
@@ -243,7 +245,8 @@ enum SwipeManager {
     
     /// Returns the per-frame velocity delta for a single touch by comparing against its previous position.
     private static func touchVelocity(_ touch: NSTouch) -> (Float, Float) {
-        guard let prevPosition = prevTouchPositions["\(touch.identity)"] else {
+        let key = touch.identity as! AnyHashable
+        guard let prevPosition = prevTouchPositions[key] else {
             return (0, 0)
         }
         let position = touch.normalizedPosition
