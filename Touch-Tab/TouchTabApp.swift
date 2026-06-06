@@ -141,7 +141,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let item = statusBarItem else { return }
         let isTrusted = AppState.shared.isTrusted
         let iconName = isTrusted ? "StatusIcon" : "StatusIcon-Warning"
-        let pointSize: CGFloat = isTrusted ? 16 : 22
+        let pointSize: CGFloat = 22
         
         let image = loadStatusBarIcon(named: iconName, pointSize: pointSize)
         if image == nil {
@@ -153,6 +153,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func loadStatusBarIcon(named name: String, pointSize: CGFloat) -> NSImage? {
+        if let img = NSImage(named: name) {
+            let copied = img.copy() as! NSImage
+            copied.size = NSSize(width: pointSize, height: pointSize)
+            return copied
+        }
+        
         let image = NSImage(size: NSSize(width: pointSize, height: pointSize))
         
         // Load 1x representation
@@ -173,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         if image.representations.isEmpty {
-            return NSImage(named: name)
+            return nil
         }
         
         return image
