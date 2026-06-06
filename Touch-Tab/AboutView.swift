@@ -12,7 +12,12 @@ struct AboutView: View {
                 // Header / App Info (Centered)
                 HStack {
                     Spacer()
-                    VStack(alignment: .center, spacing: 4) {
+                    VStack(alignment: .center, spacing: 6) {
+                        Image(nsImage: NSApp.applicationIconImage)
+                            .resizable()
+                            .frame(width: 64, height: 64)
+                            .padding(.bottom, 2)
+                        
                         Text(Bundle.main.displayName)
                             .font(.system(size: 15, weight: .bold))
                         Text(String(format: NSLocalizedString("Version %@", comment: "App version label, %@ is the version number"), Bundle.main.version))
