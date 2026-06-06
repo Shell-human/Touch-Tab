@@ -81,7 +81,7 @@ cat << 'EOF' > build/Touch-Tab.app/Contents/Info.plist
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3</string>
+	<string>1.4</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSUIElement</key>
