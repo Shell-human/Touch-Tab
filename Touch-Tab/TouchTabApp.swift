@@ -84,8 +84,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         observeAppState()
         updateStatusBarItemVisibility()
         
-        // Auto-open Preferences on launch
-        openPreferences()
+        // Auto-open Preferences on launch if not started as a login item
+        if !isLaunchedAsLoginItem {
+            openPreferences()
+        }
+    }
+    
+    private var isLaunchedAsLoginItem: Bool {
+        guard let event = NSAppleEventManager.shared().currentAppleEvent else {
+            return false
+        }
+        return event.eventID == kAEOpenApplication &&
+               event.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

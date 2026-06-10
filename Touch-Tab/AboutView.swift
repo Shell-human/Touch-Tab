@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct AboutView: View {
-    @State private var settings = Settings.shared
-    @State private var appState = AppState.shared
+    private var settings = Settings.shared
+    private var appState = AppState.shared
     
     var body: some View {
         @Bindable var settings = settings
