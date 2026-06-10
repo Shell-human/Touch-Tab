@@ -8,22 +8,12 @@ rm -rf build
 mkdir -p build/Touch-Tab.app/Contents/MacOS
 mkdir -p build/Touch-Tab.app/Contents/Resources
 
-# 2. Compile the Swift files (Universal Binary: arm64 + x86_64)
-echo "Compiling Swift source files for x86_64..."
-swiftc -warnings-as-errors -target x86_64-apple-macosx14.0 -o build/Touch-Tab-x86_64 \
-    Touch-Tab/AboutView.swift \
-    Touch-Tab/SwipeManager.swift \
-    Touch-Tab/TouchTabApp.swift
-
+# 2. Compile the Swift files (Apple Silicon arm64 natively for macOS 27)
 echo "Compiling Swift source files for arm64..."
-swiftc -warnings-as-errors -target arm64-apple-macosx14.0 -o build/Touch-Tab-arm64 \
+swiftc -warnings-as-errors -target arm64-apple-macosx27.0 -o build/Touch-Tab.app/Contents/MacOS/Touch-Tab \
     Touch-Tab/AboutView.swift \
     Touch-Tab/SwipeManager.swift \
     Touch-Tab/TouchTabApp.swift
-
-echo "Creating Universal Binary using lipo..."
-lipo -create build/Touch-Tab-x86_64 build/Touch-Tab-arm64 -output build/Touch-Tab.app/Contents/MacOS/Touch-Tab
-rm build/Touch-Tab-x86_64 build/Touch-Tab-arm64
 
 
 # 3. Copy resources (PNG assets mapped to standard macOS bundle naming)
@@ -112,7 +102,7 @@ zip -q -r build/Touch-Tab.zip build/Touch-Tab.app
 mkdir -p build/dmg_temp
 cp -R build/Touch-Tab.app build/dmg_temp/
 ln -s /Applications build/dmg_temp/Applications
-hdiutil create -volname "Touch-Tab" -srcfolder build/dmg_temp -ov -format UDZO build/Touch-Tab.dmg > /dev/null
+diskutil image create from --format UDZO --volname "Touch-Tab" build/dmg_temp build/Touch-Tab.dmg > /dev/null
 rm -rf build/dmg_temp
 
 # 8. Notarize DMG (Optional)
@@ -147,10 +137,10 @@ if ! codesign --verify --strict build/Touch-Tab.app 2>/dev/null; then
     FAIL=1
 fi
 
-# Verify universal binary architectures
+# Verify Apple Silicon binary architecture
 ARCHS=$(lipo -info build/Touch-Tab.app/Contents/MacOS/Touch-Tab 2>/dev/null)
-if ! echo "$ARCHS" | grep -q "x86_64" || ! echo "$ARCHS" | grep -q "arm64"; then
-    echo "  FAIL: not a universal binary ($ARCHS)"
+if ! echo "$ARCHS" | grep -q "arm64"; then
+    echo "  FAIL: not an arm64 binary ($ARCHS)"
     FAIL=1
 fi
 
